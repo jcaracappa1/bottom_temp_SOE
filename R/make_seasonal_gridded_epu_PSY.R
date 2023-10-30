@@ -1,11 +1,10 @@
-#Script to combine multiple bottom temp files and create a single data object
+#Script to combine multiple bottom temp files and create gridded seasonal x epu netCDF files
 library(ncdf4)
 library(dplyr)
 library(tidync)
 library(terra)
 library(sf)
 
-glorys.dir = here::here('data','GLORYS_daily','/')
 psy.dir = here::here('data','PSY_daily','/')
 
 epu.shp = read_sf(here::here('geometry','EPU_NOESTUARIES.shp'))
@@ -15,8 +14,7 @@ epus = epu.shp$EPU
 i=1
 for(i in 1:length(epus)){
   
-    epu.files = c(list.files(glorys.dir,paste0('*_',epus[i],'.nc'),full.names = T),
-                  list.files(psy.dir,paste0('*_',epus[i],'.nc'),full.names = T))
+    epu.files = list.files(psy.dir,paste0('*_',epus[i],'.nc'),full.names = T)
     
     var.winter = list()
     var.spring = list()
@@ -49,9 +47,9 @@ for(i in 1:length(epus)){
     var.summer.epu = do.call(c,var.summer)
     var.fall.epu = do.call(c,var.fall)
     
-    writeCDF(var.winter.epu,here::here('data','seasonal_gridded',paste0('GLORYS_PSY_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.spring.epu,here::here('data','seasonal_gridded',paste0('GLORYS_PSY_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.summer.epu,here::here('data','seasonal_gridded',paste0('GLORYS_PSY_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.fall.epu,here::here('data','seasonal_gridded',paste0('GLORYS_PSY_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.winter.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.spring.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.summer.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.fall.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
 }
     
