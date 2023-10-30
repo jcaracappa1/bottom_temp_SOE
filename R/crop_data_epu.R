@@ -60,6 +60,7 @@ crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
               out.prefix = 'PSY_daily_BottomTemp_2020-11-01_2023-09-30',
               out.dir = here::here('data','PSY_daily','/')
               )
+
 # t = ncdf4::nc_open(here::here('data','GLORYS_daily','GLORYS_daily_BottomTemp_2004-01-01_2020-12-31.nc'))
 # x = ncdf4::nc_open(paste0(out.dir,out.prefix,'_EPU.nc'))
 # as.POSIXct(x$dim$time$vals,origin = '1970-01-01 00:00.00 UTC')
