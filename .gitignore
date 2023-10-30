@@ -7,3 +7,6 @@ data/PSY_daily/*
 data/GLORYS_daily/*
 data/ROMS_daily/*
 data/bottom_temp_debiased_roms_reg112_1959_2004.nc
+data/seasonal_gridded_GLORYS/*
+data/seasonal_gridded_PSY/*
+data/seasonal_gridded_ROMS/*
