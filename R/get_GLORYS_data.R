@@ -27,18 +27,3 @@ get_GLORYS_data = function(out.dir,REGION, VERT_RANGE, username,password,start.d
     overwrite=TRUE
   )
 }
-
-get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
-             REGION = c(-81,29,-43,56),
-             VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
-             username = '',
-             password = '',
-             start.date = '1993-01-01',
-             end.date = '2003-12-31')
-get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
-                REGION = c(-81,29,-43,56),
-                VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
-                username = '',
-                password = '',
-                start.date = '2004-01-01',
-                end.date = '2020-12-31')
