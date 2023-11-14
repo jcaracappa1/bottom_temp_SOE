@@ -1,6 +1,8 @@
 #Function to create a daily file with a mask for cells over/under a threshold temperature
 
 # data.file = here::here('data','GLORYS_daily','GLORYS_daily_BottomTemp_1993-01-01_2003-12-31.nc')
+# product = 'GLORYS'
+# subarea = 'MABs'
 # min.lat = 36.5
 # max.lat = 41.1
 # min.lon = -76.5
@@ -11,9 +13,9 @@
 # max.year = 2003
 # min.z = 30
 # max.z = 90
-# data.out = here::here('data','daily_bottomT_window_gridded','GLORYS_min18_max30_1993_2003_daily.nc')
+# data.dir = here::here('data','daily_bottomT_window_gridded','/')
 
-make_daily_threshold = function(data.file,min.lat,max.lat,min.lon,max.lon,min.z,max.z,min.temp, max.temp,min.year,max.year,data.out){
+make_daily_threshold = function(data.file,product,subarea,min.lat,max.lat,min.lon,max.lon,min.z,max.z,min.temp, max.temp,min.year,max.year,data.dir){
   
   library(terra)
   
@@ -25,7 +27,7 @@ make_daily_threshold = function(data.file,min.lat,max.lat,min.lon,max.lon,min.z,
   # plot(bathy.crop)
   bathy.window = terra::clamp(bathy.crop, lower = min.z, upper = max.z,values = F)
   
-  writeCDF(bathy.window,here::here('data',paste0('bathymetry_min_',min.z,'_max_',max.z,'.nc')),varname = 'depth')
+  writeCDF(bathy.window,here::here('data',paste0('bathymetry_min_',min.z,'_max_',max.z,'.nc')),overwrite =T,varname = 'depth')
   # plot(bathy.window)
   
   data = rast(data.file,subds = 'depth')
@@ -49,51 +51,8 @@ make_daily_threshold = function(data.file,min.lat,max.lat,min.lon,max.lon,min.z,
   time(data.temp.depth.window) <- data.time
   
   # plot(subset(data.temp.depth.window,250))
-  writeCDF(data.temp.depth.window,data.out,varname = 'BottomT',overwrite =T,zname = 'time')
+  out.name = paste0(product,'_daily_Tmin_',min.temp,'_Tmax_',max.temp,'_',min.year,'_',max.year,'.nc')
+  writeCDF(data.temp.depth.window,paste0(data.dir,out.name),varname = 'BottomT',overwrite =T,zname = 'time')
 
 }
-
-# area = vect(here::here('geometry','EPU_NOESTUARIES.shp'))
-
-make_daily_threshold(data.file = here::here('data','GLORYS_daily','GLORYS_daily_BottomTemp_1993-01-01_2003-12-31.nc'),
-                     min.lat = 36.5,
-                     max.lat = 41.1,
-                     min.lon = -76.5,
-                     max.lon = -71,
-                     min.temp = 18,
-                     max.temp = 30,
-                     min.year = 1993,
-                     max.year = 2003,
-                     min.z = 30,
-                     max.z = 90,
-                      data.out = here::here('data','daily_bottomT_window_gridded','GLORYS_min18_max30_1993_2003_daily.nc')
-                      )
-
-make_daily_threshold(data.file = here::here('data','GLORYS_daily','GLORYS_daily_BottomTemp_2004-01-01_2020-12-31.nc'),
-                     min.lat = 36.5,
-                     max.lat = 41.1,
-                     min.lon = -76.5,
-                     max.lon = -71,
-                     min.temp = 18,
-                     max.temp = 30,
-                     min.year = 2004,
-                     max.year = 2020,
-                     min.z = 30,
-                     max.z = 90,
-                      data.out = here::here('data','daily_bottomT_window_gridded','GLORYS_min18_max30_2004_2020_daily.nc')
-                      )
-
-make_daily_threshold(data.file = here::here('data','PSY_daily','PSY_daily_BottomTemp_2020-11-01_2023-09-30.nc'),
-                     min.lat = 36.5,
-                     max.lat = 41.1,
-                     min.lon = -76.5,
-                     max.lon = -71,
-                     min.temp = 18,
-                     max.temp = 30,
-                     min.year = 2020,
-                     max.year = 2023,
-                     min.z = 30,
-                     max.z = 90,
-                      data.out = here::here('data','daily_bottomT_window_gridded','PSY_min18_max30_2021_2022_daily.nc')
-                      )
 
