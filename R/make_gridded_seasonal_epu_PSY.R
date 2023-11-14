@@ -47,9 +47,9 @@ for(i in 1:length(epus)){
     var.summer.epu = do.call(c,var.summer)
     var.fall.epu = do.call(c,var.fall)
     
-    writeCDF(var.winter.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.spring.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.summer.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.fall.epu,here::here('data','seasonal_gridded_PSY',paste0('PSY_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.winter.epu,here::here('data','gridded_seasonal_epu_PSY',paste0('PSY_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.spring.epu,here::here('data','gridded_seasonal_epu_PSY',paste0('PSY_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.summer.epu,here::here('data','gridded_seasonal_epu_PSY',paste0('PSY_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.fall.epu,here::here('data','gridded_seasonal_epu_PSY',paste0('PSY_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
 }
     

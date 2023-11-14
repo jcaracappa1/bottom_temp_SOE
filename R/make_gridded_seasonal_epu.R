@@ -1,15 +1,15 @@
 # Concatenate seasonal gridded data between GLORSY, PSY, and ROMS
 library(terra)
 
-glorys.dir = here::here('data','seasonal_gridded_GLORYS','/')
-psy.dir = here::here('data','seasonal_gridded_PSY','/')
-roms.dir = here::here('data','seasonal_gridded_ROMS','/')
+glorys.dir = here::here('data','gridded_seasonal_epu_GLORYS','/')
+psy.dir = here::here('data','gridded_seasonal_epu_PSY','/')
+roms.dir = here::here('data','gridded_seasonal_epu_ROMS','/')
 
 glorys.files = list.files(glorys.dir)
 psy.files = list.files(psy.dir)
 roms.files = list.files(roms.dir)
 
-out.dir = here::here('data','seasonal_gridded_combined','/')
+out.dir = here::here('data','gridded_seasonal_epu_combined','/')
 if(!dir.exists(out.dir)){dir.create(out.dir)}
 
 combs = expand.grid(epu = c('MAB','GOM','GB','SS'), season = c('winter','spring','fall','summer'))
