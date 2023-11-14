@@ -13,6 +13,7 @@ data/gridded_seasonal_epu_PSY/*
 data/gridded_seasonal_epu_combined/*
 data/du_Pontavice/*
 data/daily_bottomT_window_gridded/*
+data/gridded_daily_estimation_areas/*
 data/*.nc
 
 Figures/*
