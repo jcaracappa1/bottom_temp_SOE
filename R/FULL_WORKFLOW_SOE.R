@@ -1,7 +1,7 @@
 #Script that calls on all other processes in order to generate seasonal bottom temperature anomaly by EPU
 
 #1) Pull data from GLORYS. Make sure to fill out CMEMS username and password (DO NOT COMMIT THEM THOUGH!)
-source(here::here('R','get_GLORYS_data.R'))
+source(here::here('R','get_GLORYS_bottomT.R'))
 get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
                 REGION = c(-81,29,-43,56),
                 VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
@@ -18,7 +18,7 @@ get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
                 end.date = '2020-12-31')
 
 #2) Pull data from PSY. Make sure to fill out CMEMS username and password (DO NOT COMMIT THEM THOUGH!)
-source(here::here('R','get_PSYU_data.R'))
+source(here::here('R','get_PSYU_bottomT.R'))
 get_PSY_data(out.dir = here::here('data','PSY_daily','/'),
              REGION = c(-81,29,-43,56),
              VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
