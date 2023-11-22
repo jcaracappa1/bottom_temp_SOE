@@ -11,11 +11,13 @@ data/gridded_seasonal_epu_ROMS/*
 data/gridded_seasonal_epu_GLORYS/*
 data/gridded_seasonal_epu_PSY/*
 data/gridded_seasonal_epu_combined/*
+data/gridded_daily_estimation_areas_binary_mask/*
 data/du_Pontavice/*
 data/daily_bottomT_window_gridded/*
 data/gridded_daily_estimation_areas/*
 data/gridded_daily_estimation_areas_binary_mask/*
 data/*.nc
+
 
 Figures/*
 
