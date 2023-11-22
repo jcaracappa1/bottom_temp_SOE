@@ -7,8 +7,8 @@ data.dir = here::here('data','gridded_daily_estimation_areas_binary_mask','/')
 
 temp.cat = data.frame(
   group = c('normal','stressed','danger'),
-  min.temp = c(0,17,18),
-  max.temp = c(17,18,30)
+  min.temp = c(0,17,19),
+  max.temp = c(17,19,30)
 )
 
 area.shp = project(vect(here::here('geometry','MAB_ESTIMATION_AREAS_2023_UTM18_PDT_NYB.shp')),' +proj=longlat +datum=WGS84 +no_defs ')
@@ -46,7 +46,7 @@ for(i in 1:nrow(combs)){
   min.temp = temp.cat$min.temp[which(temp.cat$group == combs$temp.group[i])]
   max.temp = temp.cat$max.temp[which(temp.cat$group == combs$temp.group[i])]
   
-  area.fig.dir = paste0(figure.dir,combs$subarea[i],'/')
+  area.fig.dir = paste0(fig.dir,combs$subarea[i],'/')
   if(!dir.exists(area.fig.dir)){dir.create(area.fig.dir,recursive = T)}
   
   fig.name = paste0(area.fig.dir,'prop_area_',combs$temp.group[i],'_temp_',combs$subarea[i],'.png')

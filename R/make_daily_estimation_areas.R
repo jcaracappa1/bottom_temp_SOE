@@ -7,8 +7,8 @@ data.files = c(here::here('data','GLORYS_daily','GLORYS_daily_BottomTemp_1993-01
 
 temp.cat = data.frame(
   group = c('normal','stressed','danger'),
-  min.temp = c(0,17,18),
-  max.temp = c(17,18,30)
+  min.temp = c(0,17,19),
+  max.temp = c(17,19,30)
 )
 
 out.dir = here::here('data','gridded_daily_estimation_areas','/')
@@ -19,6 +19,7 @@ max.year = 2022
 
 time.ls = list()
 data.ls = list()
+
 
 for(k in 1:length(data.files)){
   
@@ -50,6 +51,7 @@ for(i in 1:length(area.names)){
   
   data.subarea = mask(crop(data.all,sub.area),sub.area)
   
+  writeCDF(data.subarea, paste0(out.dir,'gridded_bottomT_binary_',area.names[i],'_raw.nc'),varname = "BottomT",overwrite = T,zname = 'time')
   j =1
   for(j in 1:nrow(temp.cat)){
     data.temp.group = clamp(data.subarea,lower = temp.cat$min.temp[j], upper = temp.cat$max.temp[j], values = F)  

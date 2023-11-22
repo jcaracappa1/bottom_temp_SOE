@@ -11,8 +11,8 @@ data.dir = here::here('data','gridded_daily_estimation_areas_binary_mask','/')
 
 temp.cat = data.frame(
   group = c('normal','stressed','danger'),
-  min.temp = c(0,17,18),
-  max.temp = c(17,18,30)
+  min.temp = c(0,17,19),
+  max.temp = c(17,19,30)
 )
 
 area.shp = project(vect(here::here('geometry','MAB_ESTIMATION_AREAS_2023_UTM18_PDT_NYB.shp')),' +proj=longlat +datum=WGS84 +no_defs ')
@@ -43,8 +43,10 @@ for(i in 1:nrow(combs)){
   
   if(nrow(data) == 0){next()}
   
+  which.area = which(area.df$NewSAMS == combs$subarea[i])
+  subarea.df = as.data.frame(geom(area.shp[which.area,]))
   
-  area.fig.dir = paste0(figure.dir,'estimation_areas/',combs$subarea[i],'/')
+  area.fig.dir = paste0(figure.dir,combs$subarea[i],'/')
   if(!dir.exists(area.fig.dir)){dir.create(area.fig.dir,recursive = T)}
   
   area.fig.name = paste0(area.fig.dir,'frequency_',combs$temp.group[i],'_temp_',combs$subarea[i],'.png')
@@ -60,12 +62,14 @@ for(i in 1:nrow(combs)){
     facet_wrap(~year)+
     coord_equal(xlim = region.lon,ylim = region.lat)+
     annotation_map(neus.map,fill = 'grey70')+
+    annotate('polygon',x = subarea.df$x,y = subarea.df$y,fill = 'transparent',color = 'black')+
     scale_fill_viridis_c(name = 'Days')+
     ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees: ',combs$subarea[i]))+
     theme_bw()+
     theme(legend.position = 'bottom',
           panel.grid = element_blank(),
           plot.title = element_text(hjust = 0.5))
+  
   ggsave(area.fig.name,width = 8,height = 12,units = 'in',dpi = 300)
     
   data.subarea.ls[[i]] = data%>%
@@ -75,6 +79,7 @@ for(i in 1:nrow(combs)){
 
 data.all = bind_rows(data.subarea.ls)
 
+area.all.df = as.data.frame(geom(area.shp))
 for(i in 1:nrow(temp.cat)){
   
   min.temp = temp.cat$min.temp[i]
@@ -92,6 +97,7 @@ for(i in 1:nrow(temp.cat)){
     facet_wrap(~year)+
     coord_equal()+
     annotation_map(neus.map,fill = 'grey70')+
+    geom_polygon(data = area.all.df,aes(x= x, y = y, group = geom),fill = 'transparent',color = 'grey50')+
     scale_fill_viridis_c(name = 'Days')+
     ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees'))+
     theme_bw()+
