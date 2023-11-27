@@ -3,21 +3,7 @@
 .RData
 .Ruserdata
 
-data/PSY_daily/*
-data/GLORYS_daily/*
-data/ROMS_daily/*
-data/bottom_temp_debiased_roms_reg112_1959_2004.nc
-data/gridded_seasonal_epu_ROMS/*
-data/gridded_seasonal_epu_GLORYS/*
-data/gridded_seasonal_epu_PSY/*
-data/gridded_seasonal_epu_combined/*
-data/gridded_daily_estimation_areas_binary_mask/*
-data/du_Pontavice/*
-data/daily_bottomT_window_gridded/*
-data/gridded_daily_estimation_areas/*
-data/gridded_daily_estimation_areas_binary_mask/*
-data/*.nc
-
+data/*
 
 Figures/*
 
