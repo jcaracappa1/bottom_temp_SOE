@@ -14,29 +14,6 @@ subarea.df = data.frame(
   max.temp = c(30,30)
 )
 
-<<<<<<< HEAD
-=======
-#1) Pull data from GLORYS. Make sure to fill out CMEMS username and password (DO NOT COMMIT THEM THOUGH!)
-source(here::here('R','get_GLORYS_bottomT.R'))
-get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
-                REGION = c(-81,29,-43,56),
-                VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
-                username = '',
-                password = '',
-                start.date = '1993-01-01',
-                end.date = '2003-12-31',
-                variable= 'so')
-get_GLORYS_data(out.dir = here::here('data','GLORYS_daily','/'),
-                REGION = c(-81,29,-43,56),
-                VERT_RANGE =  c(0.49402499198913574, 5727.9169921875) ,
-                username = '',
-                password = '',
-                start.date = '2004-01-01',
-                end.date = '2020-12-31',
-                variable = 'so')
-
->>>>>>> bbac3ed (fix)
-
 #create bathymetry file
 source(here::here('R','get_GLORYS_NEUS_bathymetry.R'))
 get_GLORYS_NEUS_bathymetry(min.lat,max.lat,min.lon,max.lon)
