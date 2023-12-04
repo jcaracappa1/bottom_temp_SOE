@@ -7,3 +7,5 @@ data/*
 
 Figures/*
 
+!data/cold_pool/*.rda
+!data/cold_pool/cold_pool_cell_index.rds
