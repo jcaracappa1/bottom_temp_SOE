@@ -13,6 +13,7 @@ season.names = c('winter','spring','fall','summer')
 
 i=1
 
+data.ls = list()
 for(i in 1:length(season.names)){
   
   if(!dir.exists(out.dir)) {dir.create(out.dir)}
@@ -38,14 +39,21 @@ for(i in 1:length(season.names)){
     which.year = which(time.all.y==years[j])
     
     data.year= mean(subset(data.all,which.year))
-    names(data.year) <- years[j]
+    # names(data.year) <- years[j]
+    time(data.year) <- as.Date(paste0(as.numeric(years[j]),'-01-01'))
     data.year.ls[[j]] = data.year
   }
   
   data.season = do.call(c,data.year.ls)
+  # data.ls[[i]] = data.season  
   
-  writeCDF(data.season,paste0(out.dir,'bot_temp_gridded_',season.names[i],'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
+  writeCDF(data.season,paste0(out.dir,'bt_seasonal_gridded_',season.names[i],'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
   
 }
 
-
+# data.all = sds(data.ls)
+# names(data.all) = season.names
+# longnames(data.all) = season.names
+# units(data.all) = rep('C',4)
+# 
+# writeCDF(data.all,paste0(out.dir,'bt_seasonal_gridded.nc'),overwrite =T)
