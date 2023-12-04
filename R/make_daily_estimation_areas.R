@@ -45,31 +45,34 @@ area.shp = project(vect(here::here('geometry','MAB_ESTIMATION_AREAS_2023_UTM18_P
 area.names = area.shp$NewSAMS
 
 i=1
+max.temp = as.numeric()
 for(i in 1:length(area.names)){
   
   sub.area = area.shp[i,]
   
   data.subarea = mask(crop(data.all,sub.area),sub.area)
   
-  writeCDF(data.subarea, paste0(out.dir,'gridded_bottomT_binary_',area.names[i],'_raw.nc'),varname = "BottomT",overwrite = T,zname = 'time')
-  j =1
-  for(j in 1:nrow(temp.cat)){
-    data.temp.group = clamp(data.subarea,lower = temp.cat$min.temp[j], upper = temp.cat$max.temp[j], values = F)  
-    # plot(subset(data.temp.group,1)) 
-    
-    data.temp.group.binary = data.temp.group
-    values(data.temp.group.binary)[!is.na(values(data.temp.group.binary))] = 1
-    # plot(subset(data.temp.group.binary,1))
-    
-    time(data.temp.group) = time(data.all)
-    time(data.temp.group.binary) = time(data.all)
-    
-    out.name = paste0('gridded_bottomT_',area.names[i],'_',temp.cat$group[j],'.nc')
-    out.name.binary = paste0('gridded_bottomT_binary_',area.names[i],'_',temp.cat$group[j],'.nc')
-    
-    writeCDF(data.temp.group,paste0(out.dir,out.name),varname = "BottomT",overwrite = T,zname = 'time')
-    writeCDF(data.temp.group.binary,paste0(out.dir.binary,out.name.binary),varname = "BottomT",overwrite = T,zname = 'time')
-  }
+  max.temp[i] = max(values(data.subarea),na.rm = T)
+  
+  # writeCDF(data.subarea, paste0(out.dir,'gridded_bottomT_binary_',area.names[i],'_raw.nc'),varname = "BottomT",overwrite = T,zname = 'time')
+  # j =1
+  # for(j in 1:nrow(temp.cat)){
+  #   data.temp.group = clamp(data.subarea,lower = temp.cat$min.temp[j], upper = temp.cat$max.temp[j], values = F)  
+  #   # plot(subset(data.temp.group,1)) 
+  #   
+  #   data.temp.group.binary = data.temp.group
+  #   values(data.temp.group.binary)[!is.na(values(data.temp.group.binary))] = 1
+  #   # plot(subset(data.temp.group.binary,1))
+  #   
+  #   time(data.temp.group) = time(data.all)
+  #   time(data.temp.group.binary) = time(data.all)
+  #   
+  #   out.name = paste0('gridded_bottomT_',area.names[i],'_',temp.cat$group[j],'.nc')
+  #   out.name.binary = paste0('gridded_bottomT_binary_',area.names[i],'_',temp.cat$group[j],'.nc')
+  #   
+  #   writeCDF(data.temp.group,paste0(out.dir,out.name),varname = "BottomT",overwrite = T,zname = 'time')
+  #   writeCDF(data.temp.group.binary,paste0(out.dir.binary,out.name.binary),varname = "BottomT",overwrite = T,zname = 'time')
+  # }
 }
 
 

@@ -20,7 +20,9 @@ fig.dir = here::here('Figures','scallop','estimation_areas','/')
 
 i=1
 data.all.ls = list()
+max.t = numeric()
 for(i in 1:nrow(combs)){
+  
   
   data.file = paste0(data.dir,'gridded_bottomT_binary_',combs$subarea[i],'_',combs$temp.group[i],'.nc')
   
@@ -46,21 +48,23 @@ for(i in 1:nrow(combs)){
   min.temp = temp.cat$min.temp[which(temp.cat$group == combs$temp.group[i])]
   max.temp = temp.cat$max.temp[which(temp.cat$group == combs$temp.group[i])]
   
+  max.t[i] = max.temp
+  
   area.fig.dir = paste0(fig.dir,combs$subarea[i],'/')
   if(!dir.exists(area.fig.dir)){dir.create(area.fig.dir,recursive = T)}
   
   fig.name = paste0(area.fig.dir,'prop_area_',combs$temp.group[i],'_temp_',combs$subarea[i],'.png')
   
   
-  ggplot(data.comb, aes(x = date, y = area.prop))+
-    geom_line()+
-    theme_bw()+
-    ylab('Area (km2)')+
-    xlab('')+
-    ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees: ',combs$subarea[i]))+
-    theme(plot.title = element_text(hjust = 0.5))
-  ggsave(fig.name,width = 10,height = 6,units = 'in',dpi = 300)
-  
+  # ggplot(data.comb, aes(x = date, y = area.prop))+
+  #   geom_line()+
+  #   theme_bw()+
+  #   ylab('Area (km2)')+
+  #   xlab('')+
+  #   ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees: ',combs$subarea[i]))+
+  #   theme(plot.title = element_text(hjust = 0.5))
+  # ggsave(fig.name,width = 10,height = 6,units = 'in',dpi = 300)
+  # 
   data.all.ls[[i]] = data.comb
   
 }

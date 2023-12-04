@@ -22,6 +22,8 @@ psy.dat = readRDS(here::here('data','cold_pool','PSY_cold_pool_input.rds'))
 psy.dat = psy.dat %>% left_join(cell.index)
 
 bt_temp_time_series = bind_rows(glorys.dat,psy.dat)
+rm(glorys.dat,psy.dat)
+gc()
 
 #Optional = Run with last year
 bt_temp_time_series = filter(bt_temp_time_series,year == max(year,na.rm=T))
@@ -29,8 +31,7 @@ saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series_2
 bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
 
 
-rm(glorys.dat,psy.dat)
-gc()
+
 
 saveRDS(bt_temp_time_series,here::here('data','bt_temp_time_series.rds'))
 
