@@ -3,9 +3,14 @@
 .RData
 .Ruserdata
 
-data/*
-
 Figures/*
 
-!data/cold_pool/*.rda
-!data/cold_pool/cold_pool_cell_index.rds
+data/*
+!data/cold_pool/
+
+data/cold_pool/bt_temp_time_series.rds
+data/cold_pool/bt_temp_time_series_month.rds
+
+data/cold_pool/GLORYS_cold_pool_input.rds
+data/cold_pool/PSY_cold_pool_input.rds
+

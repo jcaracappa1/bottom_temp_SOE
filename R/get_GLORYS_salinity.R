@@ -6,8 +6,8 @@ REGION = c(-76,35,-70,42)
 VERT_RANGE =  c(0.49402499198913574, 120) 
 username = ''
 password = ''
-start.date = '1994-01-01'
-end.date = '1994-12-31'
+start.date = '2013-03-18'
+end.date = '2013-03-18'
 
 get_GLORYS_data = function(out.dir,REGION, VERT_RANGE, username,password,start.date,end.date){
   library(CopernicusMarine)
