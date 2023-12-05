@@ -49,5 +49,5 @@ for(i in 1:length(epu.names)){
            date = as.Date(as.POSIXct(time,origin = '1970-01-01 00:00:00',tz = 'UTC')))%>%
     select(EPU,date,source,BottomT.mean,BottomT.sd)
   
-  write.csv(data.combined,here::here('data','daily_epu_combined',paste0('daily_bottomT_',epu.names[i],'_1959_2022.csv')),row.names = F)
+  write.csv(data.combined,here::here('data','daily_epu_combined',paste0('daily_bottomT_',epu.names[i],'_1959_2023.csv')),row.names = F)
 }

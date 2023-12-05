@@ -56,8 +56,8 @@ crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
               )
 
 crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
-              data.file.orig = here::here('data','PSY_daily','PSY_daily_BottomTemp_2020-11-01_2023-09-30.nc'),
-              out.prefix = 'PSY_daily_BottomTemp_2020-11-01_2023-09-30',
+              data.file.orig = here::here('data','PSY_daily','PSY_daily_BottomTemp_2020-11-01_2023-12-01.nc'),
+              out.prefix = 'PSY_daily_BottomTemp_2020-11-01_2023-12-01',
               out.dir = here::here('data','PSY_daily','/')
               )
 
