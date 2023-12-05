@@ -12,34 +12,33 @@ library(ggmap)
 library(maps)
 # -------------------------------------------
 # LOAD DATA - BOTTPM TEMPERATURE
-cell.index = readRDS(here::here('data','cold_pool','cold_pool_cell_index.rds'))%>%
-  rename(cell_no = 'cell')
-
-glorys.dat = readRDS(here::here('data','cold_pool','GLORYS_cold_pool_input.rds'))
-glorys.dat = glorys.dat %>% left_join(cell.index)
-
-psy.dat = readRDS(here::here('data','cold_pool','PSY_cold_pool_input.rds'))
-psy.dat = psy.dat %>% left_join(cell.index)
-
-bt_temp_time_series = bind_rows(glorys.dat,psy.dat)
-rm(glorys.dat,psy.dat)
-gc()
-
-#Optional = Run with last year
-bt_temp_time_series = filter(bt_temp_time_series,year == max(year,na.rm=T))
-saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
+cell.index = readRDS(here::here('data','cold_pool','cold_pool_cell_index.rds'))
+#   
+# 
+# glorys.dat = readRDS(here::here('data','cold_pool','GLORYS_cold_pool_input.rds'))
+# glorys.dat = glorys.dat %>% left_join(cell.index)
+# 
+# psy.dat = readRDS(here::here('data','cold_pool','PSY_cold_pool_input.rds'))
+# psy.dat = psy.dat %>% left_join(cell.index)
+# 
+# bt_temp_time_series = bind_rows(glorys.dat,psy.dat)
+# saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series.rds'))
+# 
+# rm(glorys.dat,psy.dat)
+# gc()
+# 
+# #Optional = Run with last year
+# bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series.rds'))
+# bt_temp_time_series = filter(bt_temp_time_series,year == 2022)
+# saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
 bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
 
-
-
-
-saveRDS(bt_temp_time_series,here::here('data','bt_temp_time_series.rds'))
 
 # load('C:/Users/joseph.caracappa/Downloads/bt_temp_1959_2022_april2023.Rda')
 # load("temperature_data/bt_temp_1959_2022_april2023.Rda")
 # load month, day, year data
 
-load(here::here('data','y_m_cd.Rda'))
+load(here::here('data','cold_pool','y_m_cd.Rda'))
 
 # -------------------------------------------
 # Load grid cell within the cold area: 
@@ -53,7 +52,7 @@ bt_temp_time_series_month <- bt_temp_time_series %>%
   summarise(bt_temp=mean(bt_temp)) %>%
   as.data.frame()
 
-saveRDS(bt_temp_time_series_month,here::here('data','bt_temp_time_series_month.rds'))
+saveRDS(bt_temp_time_series_month,here::here('data','cold_pool','bt_temp_time_series_month.rds'))
 
 head(bt_temp_time_series_month)
 dim(bt_temp_time_series_month)
@@ -70,9 +69,9 @@ hist(bt_temp_time_series_month$bt_temp)
 # 1/12° grid
 # load(here::here('data','grid_cell_no.Rda'))
 # extract land border
-load(here::here('data','geo_epu.Rda'))
+load(here::here('data','cold_pool','geo_epu.Rda'))
 # EPU delineation
-load(here::here('data','geo_borders.Rda'))
+load(here::here('data','cold_pool', 'geo_borders.Rda'))
 # ---------------------------------------------------------------------------
 ymax<-42
 ymin<-34.5
@@ -87,14 +86,15 @@ dt_cp_extent<- filter(bt_temp_time_series_month, year%in%(1959:2022) & month%in%
   as.data.frame() %>%
   filter(avg_bottom_t<10) 
 
-saveRDS(dt_cp_extent,here::here('data','dt_cp_extent.rds'))
+saveRDS(dt_cp_extent,here::here('data','cold_pool','dt_cp_extent.rds'))
 
 head(dt_cp_extent)
 dim(dt_cp_extent)
 # 
-dt_cp_extent_map<-inner_join(cell.index,dt_cp_extent, by="cell_no")
+# dt_cp_extent_map<-inner_join(cell.index,dt_cp_extent, by="cell_no")
+dt_cp_extent_map<- left_join(cell.index,dt_cp_extent, by="cell_no")
 map_cp_extent <- ggplot()+ 
-  geom_sf(data=dt_cp_extent_map, aes(fill=avg_bottom_t,color=avg_bottom_t),size=0.005) +
+  geom_sf(data=dt_cp_extent_map, aes(fill=avg_bottom_t,color=avg_bottom_t),size=2, pch = 16) +
   annotation_map(map_data('worldHires'),fill = 'grey70',alpha=0.3)+
   # geom_sf(data=geo_borders, colour=NA, fill="lightgoldenrod2")+ # geo_border loaded in the map code see source(...)
   scale_x_continuous(limits=xlim1) +  scale_y_continuous(limits=ylim1) # limit in the map R code
@@ -112,7 +112,7 @@ dim(dt_cp_extent)
 dt_cp_extent_map<-inner_join(cell.index,dt_cp_extent, by="cell_no")
 # DOWNLOAD MAP
 map_cp_extent <- ggplot()+ 
-  geom_sf(data=dt_cp_extent_map, aes(fill=avg_bottom_t,color=avg_bottom_t),size=0.005) +
+  geom_sf(data=dt_cp_extent_map, aes(fill=avg_bottom_t,color=avg_bottom_t),pch = 15,size=2) +
   scale_fill_gradientn(colours=matlab.like(50),name="Mean bottom\ntemperature")+
   scale_color_gradientn(colours=matlab.like(50),name="Mean bottom\ntemperature")+
   annotation_map(map_data('worldHires'),fill = 'grey70',alpha=0.3)+
