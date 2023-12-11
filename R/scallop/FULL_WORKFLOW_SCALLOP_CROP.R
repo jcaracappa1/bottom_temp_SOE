@@ -1,4 +1,4 @@
-#Full workflow for creating scallop cropped bottom Temp data from GLORYS
+  #Full workflow for creating scallop cropped bottom Temp data from GLORYS
 
 #Parameter bounds
 subarea.df = data.frame(

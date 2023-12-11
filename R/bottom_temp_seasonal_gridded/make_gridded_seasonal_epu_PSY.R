@@ -5,7 +5,8 @@ library(tidync)
 library(terra)
 library(sf)
 
-glorys.dir = here::here('data','GLORYS_daily','/')
+psy.dir = here::here('data','PSY','PSY_daily_epu','/')
+psy.prefix = 'PSY_daily_BottomTemp_'
 
 epu.shp = read_sf(here::here('geometry','EPU_NOESTUARIES.shp'))
 epus = epu.shp$EPU
@@ -14,8 +15,7 @@ epus = epu.shp$EPU
 i=1
 for(i in 1:length(epus)){
   
-    epu.files = list.files(glorys.dir,paste0('*_',epus[i],'.nc'),full.names = T)
-                  
+    epu.files = list.files(psy.dir,paste0(psy.prefix,epus[i]),full.names = T)
     
     var.winter = list()
     var.spring = list()
@@ -48,9 +48,9 @@ for(i in 1:length(epus)){
     var.summer.epu = do.call(c,var.summer)
     var.fall.epu = do.call(c,var.fall)
     
-    writeCDF(var.winter.epu,here::here('data','gridded_seasonal_epu_GLORYS',paste0('GLORYS_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.spring.epu,here::here('data','gridded_seasonal_epu_GLORYS',paste0('GLORYS_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.summer.epu,here::here('data','gridded_seasonal_epu_GLORYS',paste0('GLORYS_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.fall.epu,here::here('data','gridded_seasonal_epu_GLORYS',paste0('GLORYS_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.winter.epu,here::here('data','gridded_bottom_temp','gridded_seasonal_epu_PSY',paste0('PSY_winter_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.spring.epu,here::here('data','gridded_bottom_temp','gridded_seasonal_epu_PSY',paste0('PSY_spring_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.summer.epu,here::here('data','gridded_bottom_temp','gridded_seasonal_epu_PSY',paste0('PSY_summer_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
+    writeCDF(var.fall.epu,here::here('data','gridded_bottom_temp','gridded_seasonal_epu_PSY',paste0('PSY_fall_',epus[i],'.nc')),varname = 'BottomT',overwrite =T,zname = 'time')
 }
     

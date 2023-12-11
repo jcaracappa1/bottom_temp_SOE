@@ -7,7 +7,7 @@ library(tidync)
 glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Data/'
 file.prefix = 'GLORYS_REANALYSIS_'
 
-out.dir = here::here('data','GLORYS_daily','/')
+out.dir = here::here('data','GLORYS','GLORYS_daily','/')
 
 years = 1993:2020
 

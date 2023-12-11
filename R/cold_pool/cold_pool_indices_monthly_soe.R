@@ -160,8 +160,21 @@ dt_cp<-select(dt_cpi_soe,year,cold_pool_index,se_cold_pool_index)  %>%
   inner_join(select(dt_persistence_index_soe,year,persistence_index,se_persistence_index), by="year") %>%
   inner_join(select(dt_extent_index_soe,year,extent_index,se_extent_index), by="year") %>%
   select(year,cold_pool_index,se_cold_pool_index,persistence_index,se_persistence_index,extent_index,se_extent_index)
-write.csv(file=here::here('data','cold_pool',"cold_pool_indices_1959_2022.csv"),x=dt_cp,row.names = F)
+write.csv(file=here::here('data','SOE',"cold_pool_indices_1959_2023.csv"),x=dt_cp,row.names = F)
 
-plot(cold_pool_index~year,dt_cp,type='b')
-plot(persistence_index~year,dt_cp,type='b')
-plot(extent_index~year,dt_cp,type='b')  
+#Optional: Compare to ecodata
+# soe = ecodata::cold_pool%>%
+#   tidyr::spread(Var,Value)
+# 
+# plot(cold_pool_index~year,dt_cp,type='l',ylim =c(-2.5,3))
+# lines(cold_pool_index~Time,soe,col =2)
+# abline(h =0)
+# 
+# plot(persistence_index~year,dt_cp,type='l',ylim = c(-2,1))
+# lines(persistence_index~Time,soe,col =2)
+# abline(h=0)
+# 
+# plot(extent_index~year,dt_cp,type='l')  
+# lines(extent_index~Time,soe,col =2)
+# abline(h=0)
+

@@ -1,7 +1,7 @@
 #Plots seasonal anomaly by EPU
 library(ggplot2)
 
-data.dir = here::here('data','seasonal_anomaly')
+data.dir = here::here('data','gridded_bottom_temp','seasonal_anomaly')
 figure.dir = here::here('Figures','/')
 
 data.files = list.files(data.dir)

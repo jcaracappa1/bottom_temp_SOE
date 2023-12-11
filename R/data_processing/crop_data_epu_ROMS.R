@@ -3,11 +3,11 @@
 
 library(terra)
 
-roms.file = here::here('data','bottom_temp_debiased_Roms_reg112_1959_2004.nc')
+roms.file = here::here('data','ROMS','bottom_temp_debiased_Roms_reg112_1959_2004.nc')
 shp.file = here::here('geometry','EPU_NOESTUARIES.shp')
 
 out.prefix = 'bottom_temp_debiased_Roms_reg112_1959_2004'
-out.dir = here::here('data','ROMS_daily','/')
+out.dir = here::here('data','ROMS','ROMS_daily_epu','/')
 
 start.year = 1959
 end.year = 1992

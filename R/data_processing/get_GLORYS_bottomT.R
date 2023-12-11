@@ -1,7 +1,8 @@
 #' Retrieves PSY data from (present day - 3 years) to present day
 #' Updates annually
 
-get_GLORYS_data = function(out.dir,REGION, VERT_RANGE, username,password,start.date,end.date){
+get_GLORYS_data = function(out.dir,REGION, VERT_RANGE,username,password,start.date,end.date,
+                           layer= 'cmems_mod_glo_phy_my_0.083_P1D-m'){
   library(CopernicusMarine)
   library(tidyverse)
   library(tidync)  
