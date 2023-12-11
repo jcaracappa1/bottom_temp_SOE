@@ -3,10 +3,10 @@
 # Run 'R/crop_data_season.R' first
 library(terra)
 
-glorys.dir = here::here('data','GLORYS_daily_season','/')
-psy.dir = here::here('data','PSY_daily_season','/')
+glorys.dir = here::here('data','GLORYS','GLORYS_daily_season','/')
+psy.dir = here::here('data','PSY','PSY_daily_season','/')
 
-out.dir = here::here('data','gridded_seasonal_combined','/')
+out.dir = here::here('data','gridded_bottom_temp','gridded_seasonal_combined','/')
 
 
 season.names = c('winter','spring','fall','summer')
@@ -23,7 +23,8 @@ for(i in 1:length(season.names)){
   glorys.data = do.call(c,glorys.data)
   
   psy.files = list.files(psy.dir,season.names[i])
-  psy.data = rast(paste0(psy.dir,psy.files))
+  psy.data = lapply(paste0(psy.dir,psy.files),rast)
+  psy.data = do.call(c,psy.data)
   
   data.all = c(glorys.data,psy.data)
   
