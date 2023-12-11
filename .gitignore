@@ -6,11 +6,12 @@
 Figures/*
 
 data/*
-!data/cold_pool/
 
-data/cold_pool/bt_temp_time_series.rds
-data/cold_pool/bt_temp_time_series_month.rds
+data/cold_pool/*
 
-data/cold_pool/GLORYS_cold_pool_input.rds
-data/cold_pool/PSY_cold_pool_input.rds
+!data/cold_pool/grid_cell_cp.Rda
+!data/cold_pool/geo_epu.Rda
+!data/cold_pool/geo_borders.Rda
+
+
 
