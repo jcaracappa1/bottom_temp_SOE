@@ -5,12 +5,12 @@
 #source(here::here('R','get_PSY_bottomT.R'))
 
 #1b) If pulled from 3D run scripts that extract bottom temperature
-source(here::here('make_GLORYS_bottomT.R'))
-source(here::here('make_PSY_bottomT.R'))
+source(here::here('R','data_processing','make_GLORYS_bottomT.R'))
+source(here::here('R','data_processing','make_PSY_bottomT.R'))
 
 #salinity
-source(here::here('make_GLORYS_bottomS.R'))
-source(here::here('make_PSY_bottomS.R'))
+source(here::here('R','data_processing','make_GLORYS_bottomS.R'))
+source(here::here('R','data_processing','make_PSY_bottomS.R'))
 
 #3) Crop the data by epu and for GLORYS and PSY years
 source(here::here('R','data_processing','crop_data_epu.R'))
@@ -20,13 +20,18 @@ crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
                  out.prefix = 'GLORYS_daily_BottomTemp_',
                  out.dir = here::here('data','GLORYS','GLORYS_daily_epu','/')
 )
+# crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
+#                  in.dir = here::here('data','PSY','PSY_daily','/'),
+#                  in.prefix = 'PSY_daily_BottomTemp_',
+#                  out.prefix = 'PSY_daily_BottomTemp_',
+#                  out.dir = here::here('data','PSY','PSY_daily_epu','/')
+# )
 crop_data_epu(shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
-                 in.dir = here::here('data','PSY','PSY_daily','/'),
-                 in.prefix = 'PSY_daily_BottomTemp_',
-                 out.prefix = 'PSY_daily_BottomTemp_',
-                 out.dir = here::here('data','PSY','PSY_daily_epu','/')
+              in.dir = here::here('data','PSY','PSY_daily','/'),
+              in.prefix = 'PSY_daily_BottomTemp_',
+              out.prefix = 'PSY_daily_BottomTemp_',
+              out.dir = here::here('data','PSY','PSY_daily_epu','/')
 )
-
 #3b) crop data by epu for ROMS years
 source(here::here('R','data_processing','crop_data_epu_ROMS.R'))
 

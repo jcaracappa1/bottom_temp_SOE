@@ -9,10 +9,13 @@ source(here::here('R','bottom_temp_seasonal_gridded','make_gridded_seasonal_epu_
 source(here::here('R','bottom_temp_seasonal_gridded','make_gridded_seasonal_epu_PSY.R'))
 
 #4) Create a seasonal gridded netCDF of ROMS data
-source(here::here('R','make_gridded_seasonal_epu_ROMS.R'))
+source(here::here('R','bottom_temp_seasonal_gridded','make_gridded_seasonal_epu_ROMS.R'))
 
-#5) Create seasonal anomaly CSV and climatology
-source(here::here('R','make_epu_seasonal_anomaly.R'))
+#5) Create single bottom temp gridded product to submit to SOE
+source(here::here('R','bottom_temp_seasonal_gridded','make_bt_seasonal_gridded.R'))
 
-#6) Plot all seasonal anomalies to check
-source(here::here('R','plot_epu_seasonal_anomaly.R'))
+#6) Create seasonal anomaly CSV and climatology
+source(here::here('R','bottom_temp_seasonal_anomaly','make_epu_seasonal_anomaly.R'))
+
+#7) Plot all seasonal anomalies to check
+source(here::here('R','bottom_temp_seasonal_anomaly','plot_epu_seasonal_anomaly.R'))

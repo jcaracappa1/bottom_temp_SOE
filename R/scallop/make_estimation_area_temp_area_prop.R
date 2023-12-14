@@ -3,7 +3,7 @@ library(terra)
 library(dplyr)
 library(ggplot2)
 
-data.dir = here::here('data','gridded_daily_estimation_areas_binary_mask','/')
+data.dir = here::here('data','estimation_areas','gridded_daily_estimation_areas_binary_mask','/')
 
 temp.cat = data.frame(
   group = c('normal','stressed','danger'),

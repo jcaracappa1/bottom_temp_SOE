@@ -19,6 +19,7 @@ crop_data_epu = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
   for(i in 1:length(data.files)){
     
     data.orig = rast(paste0(in.dir,data.files[i]))
+    # plot(data.orig)
     
     #Get year from filename
     file.year = as.numeric(strsplit(data.files[i],paste0(in.prefix,'|.nc'))[[1]][2])

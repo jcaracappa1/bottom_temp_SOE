@@ -4,19 +4,21 @@ library(raster)
 library(ncdf4)
 library(tidync)
 
-psy.dir = 'D:/GLORYS/Data_PSY_Raw/'
-file.prefix = 'GLORYS_REANALYSIS_PSY_TEMP_'
+psy.dir = 'C:/Users/joseph.caracappa/Documents/Data/PSY/'
+file.prefix = 'GLORYS_REANALYSIS_PSY_'
 
 out.dir = here::here('data','PSY','PSY_daily','/')
 
-years = 2020:2023
+years = 2021:2023
 
 
 bathy = raster('D:/GLORYS/Data_PSY_Raw/GLO-MFC_001_024_mask_bathy.nc',varname = 'deptho_lev')
 
+is.3d = F
+
 i=1
-# for(i in 4:length(years)){
-for(i in 2){
+for(i in 1:length(years)){
+
   
   year.file.names = list.files(paste0(psy.dir,years[i],'/'), paste0(file.prefix,years[i]))
   dates = sapply(year.file.names, function(x) strsplit(x,paste0(file.prefix,'|.nc'))[[1]][2],USE.NAMES = F)
@@ -25,14 +27,19 @@ for(i in 2){
   j=1
   for(j in 1:length(dates)){
     
-    data.raw = brick(paste0(psy.dir,years[i],'/',year.file.names[j]),varname = 'thetao')
+    data.raw = brick(paste0(psy.dir,years[i],'/',year.file.names[j]),varname = 'tob')
+    #plot(data.raw)
     
-    if(j == 1 & i ==1){
-      bathy.neus = mask(crop(bathy,extent(data.raw)),subset(data.raw,1))-1
-    } 
-    
-    data.bot.ls[[j]] = stackSelect(data.raw,bathy.neus)
-    # plot(data.bot.ls[[j]])
+    if(is.3d == T){
+      if(j == 1 & i ==1){
+        bathy.neus = mask(crop(bathy,extent(data.raw)),subset(data.raw,1))
+      } 
+      
+      data.bot.ls[[j]] = stackSelect(data.raw,bathy.neus)
+      # plot(data.bot.ls[[j]])
+    }else{
+      data.bot.ls[[j]] = data.raw
+    }
 
     closeAllConnections()
   }
@@ -41,6 +48,7 @@ for(i in 2){
   gc()
   
   data.year = stack(data.bot.ls)
+  #plot(data.year)
   data.year = terra::rast(data.year)
   terra::time(data.year) = as.Date(dates)
   
