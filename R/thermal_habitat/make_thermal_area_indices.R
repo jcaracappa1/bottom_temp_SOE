@@ -63,5 +63,5 @@ for(i in 1:length(data.file.names)){
   area.cell.out = paste0('annual_day_count_',data.file.epu[i],'_',data.file.temp[i],'_',data.file.z[i],'.nc')
   
   saveRDS(area.daily.df,here::here('data','thermal_area','daily_area_prop',area.daily.out))
-  writeCDF(area.cell.rast,here::here('data','thermal_area','gridded_day_count',area.cell.out),varname = 'Ndays',overwrite = T)
+  writeCDF(area.cell.rast,here::here('data','thermal_area','gridded_cell_frequency',area.cell.out),varname = 'Ndays',overwrite = T)
 }

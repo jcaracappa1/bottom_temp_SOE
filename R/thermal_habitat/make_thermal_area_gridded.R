@@ -16,14 +16,14 @@ temp.bins = data.frame(temp.group = 1:3,
                        min.temp = c(10,14,18),
                        max.temp = c(30,30,30))
 z.bins = data.frame(z.group = 1:2,
-                    min.z = c(0,25),
-                    max.z = c(25,100))
+                    min.z = c(0,25,100,500),
+                    max.z = c(25,100,500,3000))
 epu.names = c('MAB','GB','GOM','SS')
 
 tz.combs = expand.grid(temp.group = temp.bins$temp.group,z.group = z.bins$z.group)%>%
   left_join(temp.bins)%>%
   left_join(z.bins)
-
+write.csv(tz.combs,here::here('data','thermal_area','tz_groups.csv'),row.names = F)
 i=e=g=p=1
 
 for(e in 1:length(epu.names)){

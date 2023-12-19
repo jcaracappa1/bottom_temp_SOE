@@ -38,4 +38,4 @@ ggplot(data.all, aes(x= year, y = anomaly,color = source,color = source))+
   ylab('Bottom Temperature Anomaly (degC)')+
   xlab('')+
   theme(panel.grid= element_blank())
-ggsave(here::here('Figures','bt_temp_time_series_anomaly_epu.png'))
+ggsave(here::here('Figures','SOE','bt_temp_time_series_anomaly_epu.png'))
