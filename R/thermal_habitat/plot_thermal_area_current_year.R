@@ -4,8 +4,8 @@ library(ggplot2)
 library(mapdata)
 library(terra)
 
-data = read.csv(here::here('data','SOE','thermal_habitat_frequency_2023.csv'))%>%
-  filter(year == 2023)
+data = read.csv(here::here('data','SOE','thermal_habitat_persistence_2023.csv'))
+  # filter(year == 2023)
 
 neus.map = map_data('worldHires',region = 'USA')
 
@@ -13,7 +13,7 @@ head(data)
 
 ggplot()+
   geom_tile(data = data, aes(x=longitude,y = latitude,color = Ndays),size = 2)+
-  facet_wrap(max.depth~temp.threshold,labeller = 'label_both')+
+  facet_grid(temp.threshold~year)+
   annotation_map(neus.map,fill = 'grey70')+
   scale_color_viridis_c()+
   xlab('')+
@@ -23,6 +23,7 @@ ggplot()+
         panel.grid = element_blank(),
         plot.title = element_text(hjust = 0.5))
 
-ggsave(here::here('Figures','SOE','thermal_habitat_frequency_2023.png'))
+ggsave(here::here('Figures','SOE','thermal_habitat_frequency_allyears.png'),units = 'in',limitsize=F,width = 60, height =18, dpi = 300)
+
 
 

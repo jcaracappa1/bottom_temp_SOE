@@ -21,7 +21,7 @@ make_thermal_mask_epu = function(data.orig,epu,min.z,max.z,min.temp, max.temp,sh
   bathy = rast(here::here('data','bathymetry','GLO-MFC_001_024_mask_bathy.nc'),subds = 'deptho')
   
   bathy.crop = crop(bathy,epu.ext)
-  bathy.mask = mask(bathy.crop,epu.ext)
+  bathy.mask = mask(bathy.crop,epu.ext, touches =F)
   # plot(bathy.mask)
   bathy.window = terra::clamp(bathy.mask, lower = min.z, upper = max.z,values = F)
   

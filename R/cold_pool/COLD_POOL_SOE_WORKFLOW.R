@@ -11,7 +11,7 @@ source(here::here('R','cold_pool','make_cold_pool_data.R'))
 source(here::here('R','cold_pool','cold_pool_extent_monthly_soe.R'))
 
 #4) Generate cold pool indices
-source(here::here('R','cold_pool','cold_pool_indicies_monthly_soe.R'))
+source(here::here('R','cold_pool','cold_pool_indices_monthly_soe.R'))
 
 # Output files are located in 
 # her::here('data','SOE','cold_pool_indicies_1959_2023.csv')

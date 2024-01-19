@@ -1,5 +1,6 @@
 #Script to make climatology (epu x season x year)
 library(tidync)
+library(dplyr)
 library(sf)
 
 roms.dir = here::here('data','gridded_bottom_temp','gridded_seasonal_epu_ROMS','/')
@@ -43,7 +44,7 @@ for(i in 1:nrow(combs)){
            season = combs$season[i])
   
   data.climatology[[i]] = data.epu.season %>%
-    filter(year %in% 1981:2010)%>%
+    filter(year %in% 1990:2020)%>%
     group_by(epu,season)%>%
     summarise(BottomT.mean.ref = mean(BottomT.mean,na.rm=T))
   

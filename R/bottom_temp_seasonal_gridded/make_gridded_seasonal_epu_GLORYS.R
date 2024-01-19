@@ -36,10 +36,18 @@ for(i in 1:length(epus)){
       var.time.summer = which(var.time.m %in% c(7,8,9))
       var.time.fall = which(var.time.m %in% c(10,11,12))
       
-      var.winter[[j]] = subset(var.rast,var.time.winter)
-      var.spring[[j]] = subset(var.rast,var.time.spring)
-      var.summer[[j]] = subset(var.rast,var.time.summer)
-      var.fall[[j]] = subset(var.rast,var.time.fall)
+      if(length(var.time.winter)>0){
+        var.winter[[j]] = subset(var.rast,var.time.winter)
+      }
+      if(length(var.time.spring)>0){
+        var.spring[[j]] = subset(var.rast,var.time.spring)  
+      }
+      if(length(var.time.summer)>0){
+        var.summer[[j]] = subset(var.rast,var.time.summer)  
+      }
+      if(length(var.time.fall)>0){
+        var.fall[[j]] = subset(var.rast,var.time.fall)  
+      }
     }
       
     var.winter.epu = do.call(c,var.winter)

@@ -17,14 +17,14 @@ for(i in 1:length(data.files)){
   data.year = data.file%>%
     mutate(date = as.Date(date),
            year = as.numeric(format(date,format = '%Y')))%>%
-    group_by(epu,year)%>%
+    group_by(source,epu,year)%>%
     summarise(max.area = max(area.prop,na.rm=T))
   
   z.group = strsplit(as.character(data.file$z.group[1]),'m')[[1]][1] %>% as.numeric()
   z.max = tz.combs$max.z[which(tz.combs$max.z == z.group)][1]
   z.min = tz.combs$min.z[which(tz.combs$max.z == z.group)][1]
   
-  ggplot(data.year,aes(x=year,y=max.area))+
+  ggplot(data.year,aes(x=year,y=max.area,color = source))+
     geom_line()+
     facet_wrap(~epu)+
     ylab(paste0('% of EPU above ',data.file$temp.group))+
@@ -33,7 +33,7 @@ for(i in 1:length(data.files)){
     theme(plot.title = element_text(hjust = 0.5))
   ggsave(paste(fig.dir,'thermal_area_prop_',data.file$temp.group[1],data.file$z.group[1],'.png'),width = 8,height =6, units = 'in', dpi =300)
   
-  ggplot(data.file,aes(x=as.Date(date),y=area.prop))+
+  ggplot(data.file,aes(x=as.Date(date),y=area.prop,color =source))+
     geom_line()+
     facet_wrap(~epu)+
     ylab(paste0('% of EPU above ',data.file$temp.group))+

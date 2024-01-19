@@ -1,6 +1,8 @@
 #Makes data inputs for cold pool index scripts
 library(terra)
+library(dplyr)
 library(ncdf4)
+library(sf)
 
 glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
 psy.dir =  here::here('data','PSY','PSY_daily','/')
@@ -74,7 +76,8 @@ for(f in 1:length(glorys.files)){
   dat.glorys[[f]] = bind_rows(dat.out.ls)
   rm(dat.out.ls)
 }
-dat.glorys = bind_rows(dat.glorys)
+dat.glorys = bind_rows(dat.glorys)%>%
+  mutate(source = 'GLORYS')
 saveRDS(dat.glorys,here::here('data','cold_pool','cold_pool_input_GLORYS.rds'))
 
 dat.psy = list()
@@ -103,7 +106,8 @@ for(f in 1:length(psy.files)){
   dat.psy[[f]] = bind_rows(dat.out.ls)
   rm(dat.out.ls)
 }
-dat.psy = bind_rows(dat.psy)
+dat.psy = bind_rows(dat.psy)%>%
+  mutate(source = 'PSY')
 saveRDS(dat.psy,here::here('Data','cold_pool','cold_pool_input_PSY.rds'))
 
 #ROMS-NWA bias corrected inputs
@@ -144,7 +148,8 @@ for(i in 1:length(roms.years)){
   }
   dat.roms[[i]] = bind_rows(dat.out.ls)
 }
-dat.roms = bind_rows(dat.roms)
+dat.roms = bind_rows(dat.roms)%>%
+  mutate(source = 'ROMS')
 saveRDS(dat.roms,here::here('Data','cold_pool','cold_pool_input_ROMS.rds'))
 
 

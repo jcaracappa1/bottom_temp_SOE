@@ -7,9 +7,10 @@ out.dir = here::here('data','SOE','thermal_area','/')
 data.files = list.files(data.dir)
 data.prefix = 'daily_area_'
 
-file.epu = sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][2],USE.NAMES = F)
-file.temp= sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][3],USE.NAMES = F)
-file.z= sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][4],USE.NAMES = F)
+file.source = sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][2],USE.NAMES = F)
+file.epu = sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][3],USE.NAMES = F)
+file.temp= sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][4],USE.NAMES = F)
+file.z= sapply(data.files,function(x) strsplit(x,paste0(data.prefix,'|_|.rds'))[[1]][5],USE.NAMES = F)
 
 epu.names = sort(unique(file.epu))
 temp.groups = sort(unique(file.temp))
@@ -21,6 +22,7 @@ i=1
 for( i in 1:nrow(combs)){
   
   which.files = which(file.temp == combs$temp.group[i] & file.z == combs$z.group[i])
+  comb.source = file.source[which.files]
   comb.files = data.files[which.files]
   comb.epu = file.epu[which.files]
   comb.temp = file.temp[which.files]
@@ -31,7 +33,8 @@ for( i in 1:nrow(combs)){
   for(j in 1:length(comb.files)){
     
     data.comb.ls[[j]] = readRDS(paste0(data.dir,comb.files[j]))%>%
-      mutate(epu = comb.epu[j],
+      mutate(source = comb.source[j],
+             epu = comb.epu[j],
              temp.group = comb.temp[j],
              z.group = comb.z[j])
   }

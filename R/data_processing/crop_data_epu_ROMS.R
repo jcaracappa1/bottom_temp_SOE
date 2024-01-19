@@ -43,10 +43,10 @@ for(i in 1:length(years)){
   data.gb = terra::crop(data.orig,gb.area)
   data.ss = terra::crop(data.orig,ss.area)
   
-  data.mab = terra::mask(data.mab,mab.area)
-  data.gom = terra::mask(data.gom, gom.area)
-  data.gb = terra::mask(data.gb,gb.area)
-  data.ss = terra::mask(data.ss,ss.area)
+  data.mab = terra::mask(data.mab,mab.area,touches = F)
+  data.gom = terra::mask(data.gom, gom.area,touches = F)
+  data.gb = terra::mask(data.gb,gb.area,touches = F)
+  data.ss = terra::mask(data.ss,ss.area,touches = F)
   
   data.mab = rast(data.mab)
   data.gom = rast(data.gom)

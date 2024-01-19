@@ -21,9 +21,10 @@ fig.dir2 = here::here('Figures','thermal_area','annual_frequency_current_year','
 i=1
 for(i in 1:length(file.names)){
  
-  file.epu =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][2]
-  file.temp =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][3]
-  file.z =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][4]
+  file.source =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][2]
+  file.epu =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][3]
+  file.temp =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][4]
+  file.z =strsplit(file.names[i],paste0('annual_day_count_|_|.nc'))[[1]][5]
   z.group = strsplit(file.z,'m')[[1]][1] %>% as.numeric()
   z.max = tz.combs$max.z[which(tz.combs$max.z == z.group)][1]
   z.min = tz.combs$min.z[which(tz.combs$max.z == z.group)][1]
@@ -48,7 +49,7 @@ for(i in 1:length(file.names)){
       annotation_map(neus.map,fill = 'grey70')+
       annotate('polygon',x = subarea.df$x,y = subarea.df$y,fill = 'transparent',color = 'black')+
       scale_fill_viridis_c(name = 'Days')+
-      ggtitle(paste0(file.epu,', >',file.temp,',',z.min,'m - ',z.max,'m'))+
+      ggtitle(paste0(file.source,' ',file.epu,', >',file.temp,',',z.min,'m - ',z.max,'m'))+
       xlab('')+
       ylab('')+
       theme_bw()+
@@ -66,7 +67,7 @@ for(i in 1:length(file.names)){
       annotation_map(neus.map,fill = 'grey70')+
       annotate('polygon',x = subarea.df$x,y = subarea.df$y,fill = 'transparent',color = 'black')+
       scale_fill_viridis_c(name = 'Days')+
-      ggtitle(paste0(file.epu,', >',file.temp,',',z.min,'m - ',z.max,'m'))+
+      ggtitle(paste0(file.source, ' ',file.epu,', >',file.temp,',',z.min,'m - ',z.max,'m'))+
       xlab('')+
       ylab('')+
       theme_bw()+

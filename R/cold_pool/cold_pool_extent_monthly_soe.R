@@ -19,7 +19,7 @@ roms.dat = readRDS(here::here('data','cold_pool','cold_pool_input_ROMS.rds'))
 
 glorys.dat = readRDS(here::here('data','cold_pool','cold_pool_input_GLORYS.rds'))
 
-psy.dat = readRDS(here::here('data','cold_pool','cold_pool_input_ROMS.rds'))
+psy.dat = readRDS(here::here('data','cold_pool','cold_pool_input_PSY.rds'))
 
 bt_temp_time_series = bind_rows(roms.dat,glorys.dat,psy.dat)%>%
   left_join(cell.index)
@@ -39,7 +39,7 @@ bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series
 # load("temperature_data/bt_temp_1959_2022_april2023.Rda")
 # load month, day, year data
 
-load(here::here('data','cold_pool','y_m_cd.Rda'))
+y_m_cd = readRDS(here::here('data','cold_pool','y_m_cd.rds'))
 
 # -------------------------------------------
 # Load grid cell within the cold area: 
@@ -49,7 +49,7 @@ load(here::here('data','cold_pool','y_m_cd.Rda'))
 # Computing monthly temperature
 bt_temp_time_series_month <- filter(bt_temp_time_series,cell_no %in% cell.index$cell_no) %>%
   inner_join(y_m_cd,by=c("year","calendar_day")) %>%
-  group_by(cell_no,year,month) %>%
+  group_by(cell_no,year,month,source) %>%
   summarise(bt_temp=mean(bt_temp)) %>%
   as.data.frame()
 

@@ -16,6 +16,7 @@ crop_data_epu = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
   
   data.files = list.files(in.dir,in.prefix)
   
+  i=1
   for(i in 1:length(data.files)){
     
     data.orig = rast(paste0(in.dir,data.files[i]))
@@ -29,10 +30,10 @@ crop_data_epu = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
     data.gb = terra::crop(data.orig,gb.area)
     data.ss = terra::crop(data.orig,ss.area)
     
-    data.mab = terra::mask(data.mab,mab.area)
-    data.gom = terra::mask(data.gom, gom.area)
-    data.gb = terra::mask(data.gb,gb.area)
-    data.ss = terra::mask(data.ss,ss.area)
+    data.mab = terra::mask(data.mab,mab.area,touches = F)
+    data.gom = terra::mask(data.gom, gom.area,touches = F)
+    data.gb = terra::mask(data.gb,gb.area,touches= F)
+    data.ss = terra::mask(data.ss,ss.area,touches = F)
     
     time(data.mab) <- time(data.orig)
     time(data.gom) <- time(data.orig)

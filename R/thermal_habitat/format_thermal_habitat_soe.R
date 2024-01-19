@@ -11,9 +11,10 @@ freq.files = list.files(freq.dir)
 freq.prefix = 'annual_day_count_'
 
 freq.file.names = list.files(freq.dir)
-freq.file.epu = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][2],USE.NAMES = F)
-freq.file.temp = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][3],USE.NAMES = F)
-freq.file.z = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][4],USE.NAMES = F)
+freq.file.source = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][2],USE.NAMES = F)
+freq.file.epu = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][3],USE.NAMES = F)
+freq.file.temp = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][4],USE.NAMES = F)
+freq.file.z = sapply(freq.file.names,function(x) strsplit(x,paste0(freq.prefix,'|_|.nc'))[[1]][5],USE.NAMES = F)
 
 
 freq.data.ls = list()
@@ -31,11 +32,12 @@ for(i in 1:length(freq.files)){
   
   freq.data.ls[[i]] = tidync(paste0(freq.dir,freq.files[i]))  %>%
     hyper_tibble()%>%
-    mutate(year = (time-1)+1993,
+    mutate(source = freq.file.source[i],
+           year = (time-1)+1993,
            min.depth = z.min,
            max.depth = z.max,
            temp.threshold = t.min)%>%
-    select(year,min.depth,max.depth,temp.threshold,longitude,latitude,Ndays)
+    select(source,year,min.depth,max.depth,temp.threshold,longitude,latitude,Ndays)
   
 }
 freq.data.df = bind_rows(freq.data.ls)
@@ -47,9 +49,10 @@ area.files = list.files(area.dir)
 area.prefix = 'daily_area_'
 
 area.file.names = list.files(area.dir)
-area.file.epu = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][2],USE.NAMES = F)
-area.file.temp = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][3],USE.NAMES = F)
-area.file.z = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][4],USE.NAMES = F)
+area.file.source = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][2],USE.NAMES = F)
+area.file.epu = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][3],USE.NAMES = F)
+area.file.temp = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][4],USE.NAMES = F)
+area.file.z = sapply(area.file.names,function(x) strsplit(x,paste0(area.prefix,'|_|.rds'))[[1]][5],USE.NAMES = F)
 
 
 area.data.ls = list()
@@ -67,12 +70,14 @@ for(i in 1:length(area.files)){
   t.min = tz.combs$min.temp[which(tz.combs$min.temp == t.group)][1]
   
   area.data = readRDS(paste0(area.dir,area.files[i]))%>%
-  mutate(date = as.Date(date),
+  mutate(source = area.file.source[i],
+         date = as.Date(date),
          year = format(date,format = '%Y'),
+         epu = area.file.epu[i],
            min.depth = z.min,
            max.depth = z.max,
            temp.threshold = t.min)%>%
-    select(date,year,min.depth,max.depth,temp.threshold,area,area.prop)
+    select(source,date,year,epu,min.depth,max.depth,temp.threshold,area,area.prop)
   area.data.ls[[i]] = area.data
   
   area.max.ls[[i]] = area.data %>%

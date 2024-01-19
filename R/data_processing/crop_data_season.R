@@ -24,7 +24,7 @@ crop_data_season = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
     
     #Remove the extras
     data.epu = terra::crop(data.orig,epu.area)
-    data.epu = terra::mask(data.epu,epu.area)
+    data.epu = terra::mask(data.epu,epu.area,touches = F)
     
     time(data.epu) <- time(data.orig)
     
@@ -36,17 +36,22 @@ crop_data_season = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
     var.time.summer = which(var.time.m %in% c(7,8,9))
     var.time.fall = which(var.time.m %in% c(10,11,12))
     
-    var.winter = subset(data.epu,var.time.winter)
-    var.spring = subset(data.epu,var.time.spring)
-    var.summer = subset(data.epu,var.time.summer)
-    var.fall = subset(data.epu,var.time.fall)
-    
-    writeCDF(var.winter,paste0(out.dir,out.prefix,'winter_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.spring,paste0(out.dir,out.prefix,'spring_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.summer,paste0(out.dir,out.prefix,'summer_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
-    writeCDF(var.fall,paste0(out.dir,out.prefix,'fall_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
-    
-    
+    if(length(var.time.winter)>0){
+      var.winter = subset(data.epu,var.time.winter)  
+      writeCDF(var.winter,paste0(out.dir,out.prefix,'winter_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
+    }
+    if(length(var.time.spring)>0){
+      var.spring = subset(data.epu,var.time.spring)  
+      writeCDF(var.spring,paste0(out.dir,out.prefix,'spring_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
+    }
+    if(length(var.time.summer)>0){
+      var.summer = subset(data.epu,var.time.summer)  
+      writeCDF(var.summer,paste0(out.dir,out.prefix,'summer_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
+    }
+    if(length(var.time.fall)>0){
+      var.fall = subset(data.epu,var.time.fall)  
+      writeCDF(var.fall,paste0(out.dir,out.prefix,'fall_',file.year,'.nc'),varname = 'BottomT',overwrite =T,zname = 'time')
+    }
   }
 
 }

@@ -12,12 +12,12 @@ psy.prefix = 'PSY_daily_BottomTemp_'
 glorys.dir = here::here('data','GLORYS','GLORYS_daily_epu','/')
 psy.dir = here::here('data','PSY','PSY_daily_epu','/')
 
-temp.bins = data.frame(temp.group = 1:3,
-                       min.temp = c(10,14,18),
-                       max.temp = c(30,30,30))
-z.bins = data.frame(z.group = 1:2,
-                    min.z = c(0,25,100,500),
-                    max.z = c(25,100,500,3000))
+temp.bins = data.frame(temp.group = 1:2,
+                       min.temp = c(15,24),
+                       max.temp = c(30,30))
+z.bins = data.frame(z.group = 1:3,
+                    min.z = c(0,25,100),
+                    max.z = c(25,100,3000))
 epu.names = c('MAB','GB','GOM','SS')
 
 tz.combs = expand.grid(temp.group = temp.bins$temp.group,z.group = z.bins$z.group)%>%
@@ -54,21 +54,22 @@ for(e in 1:length(epu.names)){
   psy.dat = do.call('c',psy.dat)
   time(psy.dat) = do.call('c',psy.time)
   
-  data.all = c(glorys.dat,psy.dat)
-  rm(glorys.dat,psy.dat)
+  # data.all = c(glorys.dat,psy.dat)
+  # rm(glorys.dat,psy.dat)
   
-  data.all.file = here::here('data','gridded_bottom_temp','gridded_epu_combined',paste0('daily_bottomT_',epu.names[e],'.nc'))
-  writeCDF(data.all,data.all.file,overwrite =T)
+  # data.all.file = here::here('data','gridded_bottom_temp','gridded_epu_combined',paste0('daily_bottomT_',epu.names[e],'.nc'))
+  # writeCDF(data.all,data.all.file,overwrite =T)
   
   # data.all.yr = format(time(data.all),format = '%Y')%>% as.numeric()
   # data.2022 = subset(data.all, which(data.all.yr == 2022))
   # plot(data.2022)
   for(i in 1:length(tz.combs)){
     
-    new.file.name = here::here('data','gridded_bottom_temp','gridded_thermal_mask',paste0('daily_bottomT_mask_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
-    new.file.name.binary = here::here('data','gridded_bottom_temp','gridded_thermal_mask_binary',paste0('daily_bottomT_mask_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m_binary.nc'))
-    new.file.name.area = here::here('data','gridded_bottom_temp','gridded_thermal_mask_area',paste0('daily_area_mask_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
-    make_thermal_mask_epu(data.orig = data.all,
+    #For GLORYS Data
+    new.file.name = here::here('data','gridded_bottom_temp','gridded_thermal_mask',paste0('daily_bottomT_mask_GLORYS_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
+    new.file.name.binary = here::here('data','gridded_bottom_temp','gridded_thermal_mask_binary',paste0('daily_bottomT_mask_GLORYS_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m_binary.nc'))
+    new.file.name.area = here::here('data','gridded_bottom_temp','gridded_thermal_mask_area',paste0('daily_area_mask_GLORYS_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
+    make_thermal_mask_epu(data.orig = glorys.dat,
                       epu = epu.names[e],
                       min.temp = tz.combs$min.temp[i],
                       max.temp = tz.combs$max.temp[i],
@@ -77,7 +78,22 @@ for(e in 1:length(epu.names)){
                       shape.file =  here::here('geometry','EPU_NOESTUARIES.shp'),
                       out.name = new.file.name,
                       out.name.binary = new.file.name.binary,
-                      out.name.area = new.file.name.area)  
+                      out.name.area = new.file.name.area)
+    
+    #For PSY Data
+    new.file.name = here::here('data','gridded_bottom_temp','gridded_thermal_mask',paste0('daily_bottomT_mask_PSY_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
+    new.file.name.binary = here::here('data','gridded_bottom_temp','gridded_thermal_mask_binary',paste0('daily_bottomT_mask_PSY_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m_binary.nc'))
+    new.file.name.area = here::here('data','gridded_bottom_temp','gridded_thermal_mask_area',paste0('daily_area_mask_PSY_',epu.names[e],'_',tz.combs$min.temp[i],'deg_',tz.combs$max.z[i],'m.nc'))
+    make_thermal_mask_epu(data.orig = psy.dat,
+                          epu = epu.names[e],
+                          min.temp = tz.combs$min.temp[i],
+                          max.temp = tz.combs$max.temp[i],
+                          min.z = tz.combs$min.z[i],
+                          max.z = tz.combs$max.z[i],
+                          shape.file =  here::here('geometry','EPU_NOESTUARIES.shp'),
+                          out.name = new.file.name,
+                          out.name.binary = new.file.name.binary,
+                          out.name.area = new.file.name.area)
     
     print(i)
   }

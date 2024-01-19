@@ -27,7 +27,7 @@ for(i in 1:length(file.names)){
 
 data.all = bind_rows(data.ls)
 
-write.csv(data.all,here::here('data','SOE','bt_temp_time_series_anomaly_epu.csv'))
+write.csv(data.all,here::here('data','SOE','bt_temp_time_series_anomaly_epu.csv'),row.names = F)
 
 ggplot(data.all, aes(x= year, y = anomaly,color = source,color = source))+
   geom_point()+
@@ -38,4 +38,4 @@ ggplot(data.all, aes(x= year, y = anomaly,color = source,color = source))+
   ylab('Bottom Temperature Anomaly (degC)')+
   xlab('')+
   theme(panel.grid= element_blank())
-ggsave(here::here('Figures','SOE','bt_temp_time_series_anomaly_epu.png'))
+ggsave(here::here('Figures','SOE','bt_temp_time_series_anomaly_epu.png'),width = 10, height = 10, units = 'in', dpi = 300)

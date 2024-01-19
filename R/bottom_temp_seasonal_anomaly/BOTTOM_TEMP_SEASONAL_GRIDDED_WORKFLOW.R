@@ -17,5 +17,6 @@ source(here::here('R','bottom_temp_seasonal_gridded','make_bt_seasonal_gridded.R
 #6) Create seasonal anomaly CSV and climatology
 source(here::here('R','bottom_temp_seasonal_anomaly','make_epu_seasonal_anomaly.R'))
 
-#7) Plot all seasonal anomalies to check
-source(here::here('R','bottom_temp_seasonal_anomaly','plot_epu_seasonal_anomaly.R'))
+#7) Format and plot
+source(here::here('R','bottom_temp_seasonal_anomaly','format_anomaly_SOE.R'))
+#source(here::here('R','bottom_temp_seasonal_anomaly','plot_epu_seasonal_anomaly.R'))

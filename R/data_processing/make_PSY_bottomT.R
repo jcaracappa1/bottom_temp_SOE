@@ -9,7 +9,7 @@ file.prefix = 'GLORYS_REANALYSIS_PSY_'
 
 out.dir = here::here('data','PSY','PSY_daily','/')
 
-years = 2021:2023
+years = 2023:2023
 
 
 bathy = raster('D:/GLORYS/Data_PSY_Raw/GLO-MFC_001_024_mask_bathy.nc',varname = 'deptho_lev')

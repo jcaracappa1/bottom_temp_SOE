@@ -28,7 +28,7 @@ for(i in 1:length(years)){
   
   #Remove the extras
   data.crop = terra::crop(data.orig,epu.area)
-  data.crop = terra::mask(data.crop,epu.area)
+  data.crop = terra::mask(data.crop,epu.area,touches = F)
   
   data.crop = rast(data.crop)
   
