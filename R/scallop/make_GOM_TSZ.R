@@ -1,22 +1,22 @@
 #merge bottom temp, salinity, and bathymetry for Han
 library(terra)
 
-out.dir = here::here('data','gridded_raw_bottom_TS','/')
+out.dir = here::here('data','gridded_raw_bottom_TS_GOM','/')
 
 glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
 psy.dir = here::here('data','PSY_daily','/')
 
-years = 2022:2023
+years = 1993:2023
 
 isDate <- function(mydate, date.format = "%Y-%m-%d") {
   tryCatch(!is.na(as.Date(mydate, date.format)),  
            error = function(err) {FALSE})  
 }
 
-ymax<-42
-ymin<-34.5
-xmax<-(-68.5)
-xmin<-(-76.5)
+ymax<-45
+ymin<-40
+xmax<-(-65)
+xmin<-(-72)
 
 temp.files.df = data.frame(
   file.name.full = c(list.files(glorys.dir,'GLORYS_daily_BottomTemp_',full.names = T),
@@ -51,7 +51,7 @@ for(f in 1:nrow(salt.files.df)){
 }
 
 i=1
-for(i in 1:length(years)){
+for(i in 30:length(years)){
   
   # temp.file.year = temp.files.df$file.name.full[which(years[i] >= temp.files.df$start.year & years[i]<=temp.files.df$end.year )][1]
   temp.file.year = temp.files.df$file.name.full[grep(paste0('_',years[i],'.nc'),temp.files.df$file.name)][1]
@@ -71,8 +71,8 @@ for(i in 1:length(years)){
   salt.rast = rast(salt.file.year)
   
   if(i == 1){
-    # bathy = rast('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',subds = 'deptho')
-    bathy = rast(here::here('data','bathymetry','GLO-MFC_001_024_mask_bathy.nc'),subds = 'deptho')
+    bathy = rast('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',subds = 'deptho')
+    # bathy = rast(here::here('data','bathymetry','GLO-MFC_001_024_mask_bathy.nc'),subds = 'deptho')
     bathy =  crop(bathy,ext(xmin,xmax,ymin,ymax))
     writeCDF(bathy,paste0(out.dir,'GLORYS_MAB_bathymetry.nc'),overwrite =T)
   }
@@ -89,10 +89,10 @@ for(i in 1:length(years)){
   time(salt.rast) = time.dim[1:min.time]
   
   # rast.out = sds(temp.rast,salt.rast,bathy)
-  
   rast.out = sds(temp.rast,salt.rast)
+  
   names(rast.out) = c('bottomT','bottomS')
   
-  writeCDF(x = rast.out,filename = paste0(out.dir,'daily_MAB_bottom_TS_',years[i],'.nc'),overwrite =T)
+  writeCDF(rast.out,paste0(out.dir,'daily_GOM_bottom_TS_',years[i],'.nc'),overwrite =T)
   
 }

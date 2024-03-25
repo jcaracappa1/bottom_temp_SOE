@@ -7,7 +7,7 @@ library(mapdata)
 # library(rnaturalearth)
 # library(sf)
 
-data.dir = here::here('data','gridded_daily_estimation_areas_binary_mask','/')
+data.dir = here::here('data','estimation_areas','gridded_daily_estimation_areas_binary_mask','/')
 
 temp.cat = data.frame(
   group = c('normal','stressed','danger'),
@@ -77,9 +77,11 @@ for(i in 1:nrow(combs)){
   
 }
 
-data.all = bind_rows(data.subarea.ls)
+data.all = bind_rows(data.subarea.ls)%>%
+  filter(year == 2022)
 
 area.all.df = as.data.frame(geom(area.shp))
+area.et.df = as.data.frame(geom(area.shp[grep('ET',area.shp$SAMS)]))
 for(i in 1:nrow(temp.cat)){
   
   min.temp = temp.cat$min.temp[i]
@@ -90,19 +92,26 @@ for(i in 1:nrow(temp.cat)){
     group_by(year,longitude,latitude)%>%
     summarise(temp.N = mean(temp.N,na.rm=T))
   
-  temp.fig.name = paste0(figure.dir,temp.cat$group[i],'_temp_NEUS.png')
+  temp.fig.name = paste0(figure.dir,temp.cat$group[i],'_temp_NEUS_2022.png')
   
   ggplot()+
     geom_tile(data = data.temp,aes(x=longitude,y=latitude,fill = temp.N),width = 1/12,height = 1/12)+
-    facet_wrap(~year)+
     coord_equal()+
     annotation_map(neus.map,fill = 'grey70')+
     geom_polygon(data = area.all.df,aes(x= x, y = y, group = geom),fill = 'transparent',color = 'grey50')+
+    geom_polygon(data = area.et.df,aes(x= x, y = y, group = geom),fill = 'transparent',color = 'black',size =2)+
     scale_fill_viridis_c(name = 'Days')+
-    ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees'))+
+    # ggtitle(paste0(combs$temp.group[i],' temp ',min.temp,'-',max.temp,' degrees'))+
     theme_bw()+
+    xlab('Longitude')+
+    ylab('Latitude')+
     theme(legend.position = 'bottom',
           panel.grid = element_blank(),
-          plot.title = element_text(hjust = 0.5))
+          plot.title = element_text(hjust = 0.5, size = 20),
+          axis.title = element_text(size = 15),
+          axis.text = element_text(size = 14),
+          legend.text = element_text(size = 15),
+          legend.title = element_text(size = 18),
+          legend.key.size = unit(1.1,'cm'))
   ggsave(temp.fig.name,width = 8,height = 12,units = 'in',dpi = 300)
 }

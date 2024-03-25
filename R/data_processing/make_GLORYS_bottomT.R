@@ -4,7 +4,7 @@ library(raster)
 library(ncdf4)
 library(tidync)
 
-glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_Bottom_Temp/'
+glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_TS/'
 file.prefix = 'GLORYS_REANALYSIS_'
 
 out.dir = here::here('data','GLORYS','GLORYS_daily','/')
@@ -14,7 +14,7 @@ years = 2023
 # bathy = rast('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',subds = 'deptho_lev')
 bathy = raster('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',varname = 'deptho_lev')
 
-is.3d =F
+is.3d =T
 i=1
 for(i in 1:length(years)){
   
@@ -25,7 +25,8 @@ for(i in 1:length(years)){
  j=1
  for(j in 1:length(dates)){
  
-  data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'bottomT')
+  # data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'bottomT')
+   data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'thetao')
   # x = nc_open(paste0(glorys.dir,year.file.names[j]))
   
   if(is.3d == T){
