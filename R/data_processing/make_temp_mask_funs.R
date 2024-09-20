@@ -14,7 +14,11 @@
 # Returns a Terra spatRaster of just the cells that are in that data range. 
 make_temp_mask = function(file.in, file.shp, min.val, max.val){
   
-  data.rast = terra::rast(file.in)
+  if(is.character(file.in)){
+    data.rast = terra::rast(file.in)  
+  }else{
+    data.rast = file.in
+  }
   
   data.crop = terra::crop(terra::mask(data.rast,file.shp, touches = T),file.shp)
   
@@ -52,8 +56,7 @@ make_temp_ndays = function(data, out.df = T){
 # units: "m" or "km" 
 make_shp_area = function(data,file.shp,units){
   
-  data.rast = terra::rast(data)
-  data.rast = terra::subset(data.rast,1)
+  data.rast = terra::subset(data,1)
   
   data.crop = terra::crop(terra::mask(data.rast,file.shp, touches = T),file.shp)
   

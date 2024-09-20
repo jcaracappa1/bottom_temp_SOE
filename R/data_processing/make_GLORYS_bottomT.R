@@ -4,17 +4,20 @@ library(raster)
 library(ncdf4)
 library(tidync)
 
-glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_TS/'
-file.prefix = 'GLORYS_REANALYSIS_'
+# glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_TS/'
+glorys.dir = 'E:/GLORYS/Daily_Bottom_Temp/'
+# file.prefix = 'GLORYS_REANALYSIS_'
+file.prefix = c('GLORYS_Bottom_Temp_')
 
-out.dir = here::here('data','GLORYS','GLORYS_daily','/')
+# out.dir = here::here('data','GLORYS','GLORYS_daily','/')
+out.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily/'
 
-years = 2023
+years = 2021:2024
 
 # bathy = rast('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',subds = 'deptho_lev')
 bathy = raster('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',varname = 'deptho_lev')
 
-is.3d =T
+is.3d =F
 i=1
 for(i in 1:length(years)){
   
@@ -26,7 +29,8 @@ for(i in 1:length(years)){
  for(j in 1:length(dates)){
  
   # data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'bottomT')
-   data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'thetao')
+   data.raw = terra::rast(paste0(glorys.dir,years[i],'/',year.file.names[j]),subds = 'bottomT')
+   # data.raw = brick(paste0(glorys.dir,years[i],'/',year.file.names[j]),varname = 'thetao')
   # x = nc_open(paste0(glorys.dir,year.file.names[j]))
   
   if(is.3d == T){
@@ -48,8 +52,9 @@ for(i in 1:length(years)){
  closeAllConnections()
  gc()
  
- data.year = stack(data.bot.ls)
- data.year = terra::rast(data.year)
+ # data.year = stack(data.bot.ls)
+ # data.year2 = terra::rast(data.year,subds = 'bottomT')
+ data.year = terra::rast(data.bot.ls)
  terra::time(data.year) = as.Date(dates)
  
  file.name = paste0('GLORYS_daily_BottomTemp_',years[i],'.nc')
