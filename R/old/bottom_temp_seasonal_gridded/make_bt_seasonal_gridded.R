@@ -87,3 +87,4 @@ for(i in 1:length(season.names)){
 # units(data.all) = rep('C',4)
 # 
 # writeCDF(data.all,paste0(out.dir,'bt_seasonal_gridded.nc'),overwrite =T)
+

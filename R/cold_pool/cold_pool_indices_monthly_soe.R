@@ -1,12 +1,13 @@
 # --------------------------------------------------------------------
 # Cold Pool indices
 # --------------------------------------------------------------------
+report.year= 2025
 
 y_m_cd = readRDS(here::here('data','cold_pool','y_m_cd.rds'))
 
 
-bt_temp_time_series_month = readRDS(here::here('data','cold_pool','bt_temp_time_series_month.rds'))
-dt_cp_extent = readRDS(here::here('data','cold_pool','dt_cp_extent.rds'))
+bt_temp_time_series_month = readRDS(here::here('data','cold_pool',paste0('bt_temp_time_series_month_',report.year,'.rds')))
+dt_cp_extent = readRDS(here::here('data','cold_pool',paste0('dt_cp_extent_',report.year,'.rds')))
 
 bt_temp_time_series_month_cpi<-filter(bt_temp_time_series_month, cell_no %in% unique(dt_cp_extent$cell_no))
 dim(bt_temp_time_series_month_cpi)
@@ -169,7 +170,7 @@ dt_cp<-dt_cpi_soe%>%
   inner_join(select(dt_extent_index_soe,source,year,extent_index,se_extent_index), by=c('source',"year")) %>%
   select(source,year,cold_pool_index,se_cold_pool_index,persistence_index,se_persistence_index,extent_index,se_extent_index)
   
-write.csv(file=here::here('data','SOE',"cold_pool_indices_1959_2023.csv"),x=dt_cp,row.names = F)
+write.csv(file=here::here('data','SOE',paste0("cold_pool_indices_1959_",report.year-1,".csv")),x=dt_cp,row.names = F)
 
 #Optional: Compare to ecodata
 # soe = ecodata::cold_pool%>%

@@ -12,25 +12,26 @@ library(ggmap)
 library(maps)
 # -------------------------------------------
 # LOAD DATA - BOTTPM TEMPERATURE
-cell.index = readRDS(here::here('data','cold_pool','cold_pool_cell_index.rds'))
-cp.rast = rast(here::here('data','cold_pool','cold_pool_rast.nc'))
+report.year = 2025
+cell.index = readRDS(here::here('data','cold_pool',paste0('cold_pool_cell_index_',report.year,'.rds')))
+cp.rast = rast(here::here('data','cold_pool',paste0('cold_pool_rast_',report.year,'.nc')))
 
-roms.dat = readRDS(here::here('data','cold_pool','cold_pool_input_ROMS.rds'))
+roms.dat = readRDS(here::here('data','cold_pool',paste0('cold_pool_input_ROMS_',report.year,'.rds')))
 
-glorys.dat = readRDS(here::here('data','cold_pool','cold_pool_input_GLORYS.rds'))
+glorys.dat = readRDS(here::here('data','cold_pool',paste0('cold_pool_input_GLORYS_',report.year,'.rds')))
 
-psy.dat = readRDS(here::here('data','cold_pool','cold_pool_input_PSY.rds'))
+psy.dat = readRDS(here::here('data','cold_pool',paste0('cold_pool_input_PSY_',report.year,'.rds')))
 
 bt_temp_time_series = bind_rows(roms.dat,glorys.dat,psy.dat)%>%
   left_join(cell.index)
 
-saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series.rds'))
+saveRDS(bt_temp_time_series,here::here('data','cold_pool',paste0('bt_temp_time_series_',report.year,'.rds')))
 
 rm(glorys.dat,psy.dat,roms.dat)
 gc()
 
 # #Optional = Run with last year
-bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series.rds'))
+bt_temp_time_series = readRDS(here::here('data','cold_pool',paste0('bt_temp_time_series_',report.year,'.rds')))
 # bt_temp_time_series = filter(bt_temp_time_series,year == 2010)
 # saveRDS(bt_temp_time_series,here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
 # bt_temp_time_series = readRDS(here::here('data','cold_pool','bt_temp_time_series_2022.rds'))
@@ -53,7 +54,7 @@ bt_temp_time_series_month <- filter(bt_temp_time_series,cell_no %in% cell.index$
   summarise(bt_temp=mean(bt_temp)) %>%
   as.data.frame()
 
-saveRDS(bt_temp_time_series_month,here::here('data','cold_pool','bt_temp_time_series_month.rds'))
+saveRDS(bt_temp_time_series_month,here::here('data','cold_pool',paste0('bt_temp_time_series_month_',report.year,'.rds')))
 
 head(bt_temp_time_series_month)
 dim(bt_temp_time_series_month)
@@ -81,13 +82,13 @@ xmin<-(-76.5)
 xlim1<-c(xmin,xmax)
 ylim1<-c(ymin,ymax)
 # ----------------------------------------------------------------------
-dt_cp_extent<- filter(bt_temp_time_series_month, year%in%(1959:2023) & month%in%(6:9)) %>%
+dt_cp_extent<- filter(bt_temp_time_series_month, year%in%(1959:(report.year-1)) & month%in%(6:9)) %>%
   group_by(cell_no)  %>%
   summarise(avg_bottom_t=mean(bt_temp)) %>%
   as.data.frame() %>%
   filter(avg_bottom_t<10) 
 
-saveRDS(dt_cp_extent,here::here('data','cold_pool','dt_cp_extent.rds'))
+saveRDS(dt_cp_extent,here::here('data','cold_pool',paste0('dt_cp_extent_',report.year,'.rds')))
 
 head(dt_cp_extent)
 dim(dt_cp_extent)
@@ -136,6 +137,6 @@ map_cp_extent <- ggplot()+
         panel.grid.major = element_line(colour = "grey50",size=0.1,linetype = "dotted")) +
   ggtitle("Cold pool extent") 
 # ------------------------------------------------------
-jpeg(file = here::here('Figures','cold_pool','cp_extent_soe.jpeg'), width = 14, height = 14, units = "cm", res = 500)
+jpeg(file = here::here('Figures','cold_pool',paste0('cp_extent_soe_',report.year,'.jpeg')), width = 14, height = 14, units = "cm", res = 500)
 map_cp_extent
 dev.off()

@@ -1,7 +1,7 @@
 #Script to make annual mean bottom temp by epu for SOE (part of bottom temp comp)
 library(tidync)
 
-roms.dir = here::here('data','ROMS','ROMS_daily_epu','/')
+roms.dir = here::here('data','ROMS','2024','ROMS_daily_epu','/')
 glorys.dir = here::here('data','GLORYS','GLORYS_daily_epu','/')
 psy.dir = here::here('data','PSY','PSY_daily_epu','/')
 

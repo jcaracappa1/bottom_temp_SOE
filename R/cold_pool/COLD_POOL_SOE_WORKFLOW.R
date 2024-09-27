@@ -13,5 +13,19 @@ source(here::here('R','cold_pool','cold_pool_extent_monthly_soe.R'))
 #4) Generate cold pool indices
 source(here::here('R','cold_pool','cold_pool_indices_monthly_soe.R'))
 
-# Output files are located in 
-# her::here('data','SOE','cold_pool_indicies_1959_2023.csv')
+#Compare to last year
+cp24 = ecodata::cold_pool%>%
+  mutate(report.year = 2024)
+cp25 = read.csv(here::here('data','SOE','cold_pool_indices_1959_2024.csv'))%>%
+  rename(Time = 'year')%>%
+  tidyr::gather(Var, Value,-source,-Time)%>%
+  mutate(EPU = 'MAB',
+         report.year = 2025)
+
+cp.all = bind_rows(cp24,cp25)
+
+ggplot(cp.all, aes(x = Time, y = Value, color = source,lty = factor(report.year)))+
+  geom_line()+
+  facet_wrap(~Var,scale = 'free_y')
+
+#### Need to update for 2024 Fall

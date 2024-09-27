@@ -4,7 +4,10 @@ library(dplyr)
 library(ncdf4)
 library(sf)
 
-glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
+report.year = 2025
+
+# glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
+glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily/'
 psy.dir =  here::here('data','PSY','PSY_daily','/')
 
 glorys.files = list.files(glorys.dir,'GLORYS_daily_BottomTemp_*')
@@ -42,8 +45,8 @@ glorys.grid.out = glorys.grid %>%
   st_as_sf(coords = c('x','y'))%>%
   rename(cell_no = 'cell')
 
-writeCDF(glorys.grid,here::here('data','cold_pool','cold_pool_rast.nc'),overwrite =T)
-saveRDS(glorys.grid.out,here::here('data','cold_pool','cold_pool_cell_index.rds'))
+writeCDF(glorys.grid,here::here('data','cold_pool',paste0('cold_pool_rast_',report.year,'.nc')),overwrite =T)
+saveRDS(glorys.grid.out,here::here('data','cold_pool',paste0('cold_pool_cell_index_',report.year,'.rds')))
 
 
 dat.glorys = list()
@@ -78,7 +81,7 @@ for(f in 1:length(glorys.files)){
 }
 dat.glorys = bind_rows(dat.glorys)%>%
   mutate(source = 'GLORYS')
-saveRDS(dat.glorys,here::here('data','cold_pool','cold_pool_input_GLORYS.rds'))
+saveRDS(dat.glorys,here::here('data','cold_pool',paste0('cold_pool_input_GLORYS_',report.year,'.rds')))
 
 dat.psy = list()
 for(f in 1:length(psy.files)){
@@ -108,7 +111,7 @@ for(f in 1:length(psy.files)){
 }
 dat.psy = bind_rows(dat.psy)%>%
   mutate(source = 'PSY')
-saveRDS(dat.psy,here::here('Data','cold_pool','cold_pool_input_PSY.rds'))
+saveRDS(dat.psy,here::here('Data','cold_pool',paste0('cold_pool_input_PSY_',report.year,'.rds')))
 
 #ROMS-NWA bias corrected inputs
 roms.file = here::here('data','ROMS','bottom_temp_debiased_roms_reg112_1959_2004.nc')
@@ -150,6 +153,6 @@ for(i in 1:length(roms.years)){
 }
 dat.roms = bind_rows(dat.roms)%>%
   mutate(source = 'ROMS')
-saveRDS(dat.roms,here::here('Data','cold_pool','cold_pool_input_ROMS.rds'))
+saveRDS(dat.roms,here::here('Data','cold_pool',paste0('cold_pool_input_ROMS_',report.year,'.rds')))
 
 
