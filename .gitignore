@@ -13,8 +13,3 @@ data/*
 !data/cold_pool/grid_cell_cp.Rda
 
 data/cold_pool/*
-
-
-
-
-
