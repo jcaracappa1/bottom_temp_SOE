@@ -7,11 +7,14 @@ Figures/*
 
 data/*
 
-data/cold_pool/*
-
 !data/cold_pool/grid_cell_cp.Rda
 !data/cold_pool/geo_epu.Rda
 !data/cold_pool/geo_borders.Rda
+!data/cold_pool/grid_cell_cp.Rda
+
+data/cold_pool/*
+
+
 
 
 
