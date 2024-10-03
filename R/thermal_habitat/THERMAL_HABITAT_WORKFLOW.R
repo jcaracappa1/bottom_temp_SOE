@@ -32,7 +32,7 @@ glorys.years = 1993:2024
 
 t.max.seq = seq(0.5,30,by =  0.5)
 epu.names = c('MAB','GB','GOM','SS','all')
-out.df = expand.grid(year = glorys.years,t.max = t.max.seq,epu = epu.names)%>%
+out.df = expand.grid(year = glorys.years,t.max = t.max.seq,epu = epu.names,stringsAsFactors = F)%>%
   mutate(nd.min = NA,
          nd.max = NA,
          nd.mean = NA,
@@ -56,15 +56,24 @@ out.df = expand.grid(year = glorys.years,t.max = t.max.seq,epu = epu.names)%>%
 
 i=1
 for(i in 1:nrow(out.df)){
+  
+  if(out.df$epu[i] == 'all'){
+    area.names = c('MAB','GB','GOM','SS')
+  }else{
+    area.names = out.df$epu[i]
+  }
+  
+  this.file = glorys.files[[which(glorys.years == out.df$year[i])]]
+  
   #Number of days exceeding t.max
-  nd.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = glorys.files[[which(glorys.years == out.df$year[i])]],
+  nd.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = this.file,
                                                   write.out =F,
                                                   shp.file = shp.file,
                                                   var.name = 'BottomT',
                                                   statistic = 'nd',
                                                   ref.value = out.df$t.max[i],
                                                   type = 'above',
-                                                  area.names = ifelse(out.df$epu[i] == 'all',c('MAB','GB','GOM','SS'),out.df$epu[i]) 
+                                                  area.names =area.names
   )
   out.df$nd.min[i]=terra::global(nd.i[[1]],min,na.rm=T)
   out.df$nd.max[i]=terra::global(nd.i[[1]],max,na.rm=T)
@@ -73,31 +82,32 @@ for(i in 1:nrow(out.df)){
   out.df$nd.sd[i]=terra::global(nd.i[[1]],sd,na.rm=T)
   
   #Number of consecutive days exceeding t.max
-  nd.con.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = glorys.files[[which(glorys.years == out.df$year[i])]],
+  nd.con.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = this.file,
                                                   write.out =F,
                                                   shp.file = shp.file,
                                                   var.name = 'BottomT',
                                                   statistic = 'nd.con',
                                                   ref.value = out.df$t.max[i],
                                                   type = 'above',
-                                                  area.names = ifelse(out.df$epu[i] == 'all',c('MAB','GB','GOM','SS'),out.df$epu[i]) 
+                                                  area.names = area.names
   )
+  terra::values(nd.con.i[[1]])[which(terra::values(nd.con.i[[1]]) ==0)] <- NA
   
   out.df$nd.con.min[i]=terra::global(nd.con.i[[1]],min,na.rm=T)
   out.df$nd.con.max[i]=terra::global(nd.con.i[[1]],max,na.rm=T)
-  out.df$nd.con.med[i]=terra::global(nd.con.i[[1]],mean,na.rm=T)
-  out.df$nd.con.mean[i]=terra::global(nd.con.i[[1]],median,na.rm=T)
+  out.df$nd.con.mean[i]=terra::global(nd.con.i[[1]],mean,na.rm=T)
+  out.df$nd.con.med[i]=terra::global(nd.con.i[[1]],median,na.rm=T)
   out.df$nd.con.sd[i]=terra::global(nd.con.i[[1]],sd,na.rm=T)
   
   #Degree days exceeding t.max
-  dd.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = glorys.files[[which(glorys.years == out.df$year[i])]],
+  dd.i =EDABUtilities::make_2d_deg_day_gridded_nc(data.in = this.file,
                                                   write.out =F,
                                                   shp.file = shp.file,
                                                   var.name = 'BottomT',
                                                   statistic = 'dd',
                                                   ref.value = out.df$t.max[i],
                                                   type = 'above',
-                                                  area.names = ifelse(out.df$epu[i] == 'all',c('MAB','GB','GOM','SS'),out.df$epu[i]) 
+                                                  area.names = area.names
   )
   
   out.df$dd.min[i]=terra::global(dd.i[[1]],min,na.rm=T)
@@ -107,27 +117,40 @@ for(i in 1:nrow(out.df)){
   out.df$dd.sd[i]=terra::global(dd.i[[1]],sd,na.rm=T)
   
   #Calculate EPU area
-  shp.vect = terra::vect(shp.file)
-  shp.area.epu = terra::expanse(shp.vect)
-  if(out.df$epu[i] == 'all'){
-    shp.area = sum(shp.area.epu)
-  }else{
-    shp.str = as.data.frame(shp.vect)
-    which.att = which(apply(shp.str,2,function(x) all(out.df$epu[i] %in% x)))
-    which.area =  match(out.df$epu[i],shp.str[,which.att])
-    shp.area = shp.area.epu[which.area]
-  }
+  # shp.vect = terra::vect(shp.file)
+  # shp.area.epu = shp.vect$Shape_Area
+  # if(out.df$epu[i] == 'all'){
+  #   shp.area = sum(shp.area.epu)
+  # }else{
+  #   shp.str = as.data.frame(shp.vect)
+  #   which.att = which(apply(shp.str,2,function(x) all(out.df$epu[i] %in% x)))
+  #   which.area =  match(out.df$epu[i],shp.str[,which.att])
+  #   shp.area =shp.area.epu[which.area]
+  # }
   
   #Mask of area over t.max
-  area.i = EDABUtilities::mask_nc_2d(data.in = glorys.files[[which(glorys.years == out.df$year[i])]],
+  area.i = EDABUtilities::mask_nc_2d(data.in = this.file,
                                      write.out =F,
                                      shp.file = shp.file,
                                      var.name = 'BottomT',
                                      min.value =  out.df$t.max[i],
                                      max.value = Inf,
-                                     binary = T
+                                     binary = T,
+                                     area.names =area.names
   )
-  area.df = lapply(area.i,function(x) return(terra::expanse(x))) %>%
+  
+  this.rast = terra::subset(terra::rast(this.file),1)
+  shp.vect = terra::vect(shp.file)
+  shp.str = as.data.frame(shp.vect)
+  which.att = which(apply(shp.str,2,function(x) all(area.names %in% x)))
+  which.area =  match(area.names,shp.str[,which.att])
+  shp.sub =shp.vect[which.area]
+  
+  data.area = terra::mask(this.rast,shp.sub)
+  terra::values(data.area)[!is.na(terra::values(data.area))] <- 1
+  shp.area = terra::expanse(data.area)$area
+  
+  area.df = lapply(area.i,function(x) return(terra::expanse(x,byValue =T))) %>%
     as.data.frame()%>%
     mutate(area.pct = area/ shp.area)
   
@@ -137,10 +160,10 @@ for(i in 1:nrow(out.df)){
   out.df$pct.area.mean[i] = mean(area.df$area.pct,na.rm=T)
   out.df$pct.area.sd[i] = sd(area.df$area.pct,na.rm=T)
   
-  print(i/nrow(out.df))
+  print(paste0(i,'-',i/nrow(out.df)))
 }
 
-saveRDS(out.df,here::here('data','SOE','thermal_habitat_2025.rds'))
+saveRDS(out.df,here::here('data','SOE','thermal_habitat_2025_v2.rds'))
 
                                           
 
