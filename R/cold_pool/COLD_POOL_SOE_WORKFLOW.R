@@ -22,7 +22,8 @@ cp25 = read.csv(here::here('data','SOE','cold_pool_indices_1959_2024.csv'))%>%
   mutate(EPU = 'MAB',
          report.year = 2025)
 
-cp.all = bind_rows(cp24,cp25)
+cp.all = bind_rows(cp24,cp25) %>%
+  filter(source != 'PSY')
 
 ggplot(cp.all, aes(x = Time, y = Value, color = source,lty = factor(report.year)))+
   geom_line()+

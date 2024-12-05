@@ -4,15 +4,15 @@ library(raster)
 library(ncdf4)
 library(tidync)
 
-# glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_TS/'
-glorys.dir = 'E:/GLORYS/Daily_Bottom_Temp/'
-# file.prefix = 'GLORYS_REANALYSIS_'
-file.prefix = c('GLORYS_Bottom_Temp_')
+glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/Daily_Bottom_Temp/'
+# glorys.dir = 'E:/GLORYS/Daily_Bottom_Temp/'
+file.prefix = 'GLORYS_REANALYSIS_'
+# file.prefix = c('GLORYS_Bottom_Temp_')
 
 # out.dir = here::here('data','GLORYS','GLORYS_daily','/')
 out.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily/'
 
-years = 2021:2024
+years = 2024
 
 # bathy = rast('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',subds = 'deptho_lev')
 bathy = raster('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLO-MFC_001_030_mask_bathy.nc',varname = 'deptho_lev')

@@ -154,16 +154,51 @@ for(i in 1:nrow(out.df)){
     as.data.frame()%>%
     mutate(area.pct = area/ shp.area)
   
-  out.df$pct.area.min[i] = min(area.df$area.pct,na.rm=T)
-  out.df$pct.area.med[i] = median(area.df$area.pct,na.rm=T)
-  out.df$pct.area.max[i] = max(area.df$area.pct,na.rm=T)
-  out.df$pct.area.mean[i] = mean(area.df$area.pct,na.rm=T)
-  out.df$pct.area.sd[i] = sd(area.df$area.pct,na.rm=T)
+  if(nrow(area.df)==0){
+    out.df$pct.area.min[i] = 0
+    out.df$pct.area.med[i] = 0
+    out.df$pct.area.max[i] = 0
+    out.df$pct.area.mean[i] = 0
+    out.df$pct.area.sd[i] = 0
+  }else{
+    out.df$pct.area.min[i] = min(area.df$area.pct,na.rm=T)
+    out.df$pct.area.med[i] = median(area.df$area.pct,na.rm=T)
+    out.df$pct.area.max[i] = max(area.df$area.pct,na.rm=T)
+    out.df$pct.area.mean[i] = mean(area.df$area.pct,na.rm=T)
+    out.df$pct.area.sd[i] = sd(area.df$area.pct,na.rm=T)
+  }
+
   
   print(paste0(i,'-',i/nrow(out.df)))
 }
 
-saveRDS(out.df,here::here('data','SOE','thermal_habitat_2025_v2.rds'))
+saveRDS(out.df,here::here('data','SOE','thermal_habitat_2025_v3.rds'))
+out.df = readRDS(here::here('data','SOE','thermal_habitat_2025_v2.rds')) %>%
+  rename(temperature_limit = 't.max',
+         nDays_min = 'nd.min',
+         nDays_max = 'nd.max',
+         nDays_mean = 'nd.mean',
+         nDays_median = 'nd.med',
+         nDays_sd = 'nd.sd',
+         nDays_consecutive_min = 'nd.con.min',
+         nDays_consecutive_max = 'nd.con.max',
+         nDays_consecutive_mean = 'nd.con.mean',
+         nDays_consecutive_median = 'nd.con.med',
+         nDays_consecutive_sd = 'nd.con.sd',
+         degree_day_min = 'dd.min',
+         degree_day_max = 'dd.max',
+         degree_day_mean = 'dd.mean',
+         degree_day_median = 'dd.med',
+         degree_day_sd = 'dd.sd',
+         percent_area_min = 'pct.area.min',
+         percent_area_max = 'pct.area.max',
+         percent_area_mean = 'pct.area.mean',
+         percent_area_median = 'pct.area.med',
+         percent_area_sd = 'pct.area.sd')%>%
+  ungroup()
+  out.df =as.data.frame(apply(out.df,2,as.character) )
+
+write.csv(out.df,file =here::here('data','SOE','thermal_habitat_2025.csv'),row.names =F)
 
                                           
 

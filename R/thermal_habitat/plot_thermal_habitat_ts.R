@@ -86,11 +86,11 @@ for(i in 1:length(epu.names)){
     # scale_color_manual(values = c('grey80','red'))+
     geom_line(data=filter(data.pct.area, epu == epu.names[i]),aes(x= t.max, y = Value, color = year,group = year))+
     annotate('line',x = x$t.max, y = x$Value, color = 'red')+
-    ylab('Consecutive Days')+
+    ylab('Proportion Area')+
     xlab('Max Bottom Temperature')+
     xlim(0,35)+
     facet_wrap(~epu,ncol =2)+
-    guides(color = F)+
+    # guides(color = F)+
     theme_bw()
   gridExtra::grid.arrange(p)
 }
