@@ -6,7 +6,9 @@ shp.file =here::here('geometry','EPU_NOESTUARIES.shp')
 glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily/'
 glorys.prefix = 'GLORYS_daily_BottomTemp_'
 glorys.files = list.files(glorys.dir,glorys.prefix,full.names = T)
+# glorys.files = glorys.files[32]
 glorys.years = 1993:2024
+# glorys.years = 2024
 
 t.max.seq = seq(0.5,30,by =  0.5)
 # t.max.seq = c(10,10.5)
@@ -27,26 +29,48 @@ combs = expand.grid(depth.name = depth.df$depth.name,EPU = EPU.names,stringsAsFa
 
 bathy.shp = terra::rast(here::here('data','bathymetry','GLO-MFC_001_024_mask_bathy.nc'),subds = 'deptho')
 
+ext.ref = terra::ext(terra::rast(here::here('data','SOE','thermal_habitat_gridded','thermal_habitat_gridded_1993_SOE2025.nc')))
+# ext.ref = terra::ext(terra::rast(glorys.files[1]))
+# extent = ext(c(-78,-62,34,47))
+
 var.atts = read.csv(here::here('data','SOE','thermal_habitat_gridded_variable_attributes.csv')) %>%
   filter(!is.na(Value) & Attribute.Name != '_FillValue')
 global.atts = read.csv(here::here('data','SOE','thermal_habitat_gridded_global_attributes.csv'))%>%
   filter(!is.na(Value))
 
+#create EPU mask layer
+EPU.vect = terra::vect(shp.file)
+neus.shp = terra::crop(bathy.shp,ext.ref)
+writeCDF(neus.shp,here::here('data','SOE','thermal_habitat_gridded_v2','GLORYS_depth_NEUS.nc'))
+# writeCDF(,here::here('data','SOE','thermal_habitat_gridded_v2','GLORYS_depth_NEUS.nc'))
+
+epu.ls = lapply(1:length(EPU.names), function(x){
+  e.vect = EPU.vect[which(EPU.vect$EPU %in% EPU.names[x])]
+  e = terra::mask(neus.shp,e.vect)
+  values(e)[!is.na(values(e))] = x
+  return(e)
+})
+epu.mask = terra::merge(terra::sprc(epu.ls))
+epu.mask = as.factor(epu.mask)
+levels(epu.mask) = data.frame(1:4, EPU.names)
+epu.mask.binary = epu.mask
+values(epu.mask.binary)[!is.na(values(epu.mask.binary))] = 1
+
 i=1
-y=1
+y=32
 
 for(y in 1:length(glorys.years)){
-# for(y in 1:2){
+# for(y in 1:32){
   
   # if(y == 1){
   # 
   #   combs2 = combs[which(combs$EPU == 'NES' & combs$depth.name == 'alldepths' & combs$t.max == 1),]
   #   
-  #   if(combs$EPU[i] == 'all'){
-  #     area.names = c('MAB','GB','GOM','SS')
-  #   }else{
-  #     area.names = combs$EPU[i]
-  #   }
+    # if(combs$EPU[i] == 'all'){
+    #   area.names = c('MAB','GB','GOM','SS')
+    # }else{
+    #   area.names = combs$EPU[i]
+    # }
   #     
   #   # this.file = glorys.files[[which(glorys.years == glorys.years[i])]]
   #   this.file = glorys.files[[y]]
@@ -118,116 +142,109 @@ for(y in 1:length(glorys.years)){
   #   
   # }
   
-
-  
   t=i=1
   out.ind =1
   out.var.names = character()
   year.out.ls = list()
   out.df.ls = list()
+  out.ls = list()
+  depth.rast.ls = list()
+  epu.rast.ls = list()
   for(t in 1:length(t.max.seq)){
     
     # this.file = glorys.files[[which(glorys.years == glorys.years[i])]]
     this.file = glorys.files[[y]]
     this.year = glorys.years[y]
     
-    depth.rast.ls = list()
-    epu.rast.ls = list()
+
+    # area.vect = EPU.vect[which(EPU.vect$EPU %in% area.names)]
     
-    out.ls = list()
+    # depth.rast = terra::clamp(neus.shp, lower = combs$depth.min[i], upper = combs$depth.max[i],values =F)
     
-    for(i in 1:nrow(combs)){
-      # for(i in 1:length(glorys.)){
-      
-      if(combs$EPU[i] == 'NES'){
-        area.names = c('MAB','GB','GOM','SS')
-      }else{
-        area.names = combs$EPU[i]
-      }
-      
-      EPU.vect = terra::vect(shp.file)
-      area.vect = EPU.vect[which(EPU.vect$EPU %in% area.names)]
-      
-      if(i ==1 & t == 1){
-        neus.shp = terra::crop(bathy.shp,terra::rast(this.file))
-        #Create depth mask layer
-        depth.ls = lapply(1:nrow(depth.df),function(x){
-          d = terra::clamp(neus.shp,lower = depth.df$depth.min[x],upper = depth.df$depth.max[x],values = F)
-          values(d)[!is.na(values(d))] = x
-          return(d)
-        })
-        depth.mask = terra::merge(terra::sprc(depth.ls))
-        depth.mask = as.factor(depth.mask)
-        levels(depth.mask) = dplyr::select(depth.df,id,depth.name)
-        terra::time(depth.mask) = glorys.years[y]
-        writeCDF(depth.mask,here::here('data','SOE','thermal_habitat_gridded','depth_mask.nc'),overwrite =T)
-        #create EPU mask layer
-        epu.ls = lapply(1:length(EPU.names), function(x){
-          e.vect = EPU.vect[which(EPU.vect$EPU %in% EPU.names[x])]
-          e = terra::mask(neus.shp,e.vect)
-          values(e)[!is.na(values(e))] = x
-          return(e)
-        })
-        epu.mask = terra::merge(terra::sprc(epu.ls))
-        epu.mask = as.factor(epu.mask)
-        levels(epu.mask) = data.frame(1:4, EPU.names)
-        terra::time(epu.mask) = glorys.years[y]
-        
-        epu.mask.binary = epu.mask
-        values(epu.mask.binary)[!is.na(values(epu.mask.binary))] = 1
-        writeCDF(epu.mask,here::here('data','SOE','thermal_habitat_gridded','EPU_mask.nc'),overwrite =T)
-      }
-      
-      depth.rast = terra::clamp(neus.shp, lower = combs$depth.min[i], upper = combs$depth.max[i],values =F)
-   
-      # area.crop = terra::crop(depth.rast,area.vect)
-      area.mask = terra::mask(depth.rast,area.vect)
-      
-      #Mask of area over t.max
-      area.i = EDABUtilities::mask_nc_2d(data.in = this.file,
-                                         write.out =F,
-                                         shp.file = area.mask,
-                                         var.name = 'BottomT',
-                                         min.value =  t.max.seq[t],
-                                         max.value = Inf,
-                                         binary = F,
-                                         area.names =NA
-      )
-      
-      out.ls[[i]] = EDABUtilities::make_2d_deg_day_gridded_nc(data.in = area.i,
-                                                              shp.file = area.mask,
-                                                              var.name = 'BottomT',
-                                                              statistic = 'nd',
-                                                              type = 'above',
-                                                              ref.value = t.max.seq[t],
-                                                              area.names = NA
-      )[[1]]
-      
-      year.time = as.POSIXct(paste0(glorys.years[y], '-01-01 00:00:00UTC'),origin = '1970-01-01 00:00:00',tz = 'UTC')
-      terra::time(out.ls[[i]]) = as.numeric(year.time)
-      # terra::time(out.ls[[i]]) = as.Date(paste0(glorys.years[y], '-01-01'))
-      
-      
-      out.df.ls[[out.ind]] = as.data.frame(out.ls[[i]],cells =T, xy = T) %>%
-        mutate(Time = this.year, EPU = combs$EPU[i], Depth = combs$depth.name[i], Var =t.max.seq[t], Source = 'GLORYS',Units = 'ndays')%>%
-        rename(Latitude = 'y', Longitude = 'x', Value = 'sum')%>%
-        select(Time,EPU, Depth, Var,Value,Latitude,Longitude,Source,Units)
-      
-      
-      
-      print(signif(i/nrow(combs) ,2))
+    # area.crop = terra::crop(depth.rast,area.vect)
+    # area.mask = terra::mask(depth.rast,EPU.vect)
     
-      out.ind = out.ind + 1
-    }
+    #Mask of area over t.max
+    area.i = EDABUtilities::mask_nc_2d(data.in = this.file,
+                                       write.out =F,
+                                       shp.file = EPU.vect,
+                                       var.name = 'BottomT',
+                                       min.value =  t.max.seq[t],
+                                       max.value = Inf,
+                                       binary = F,
+                                       area.names =NA
+    )
     
+    out.ls[[t]] = EDABUtilities::make_2d_deg_day_gridded_nc(data.in = area.i,
+                                                            shp.file = EPU.vect,
+                                                            var.name = 'BottomT',
+                                                            statistic = 'nd',
+                                                            type = 'above',
+                                                            ref.value = t.max.seq[t],
+                                                            area.names = NA
+    )[[1]]
+    
+    out.ls[[t]] = out.ls[[t]] *terra::crop(epu.mask.binary, out.ls[[t]])
+    
+    year.time = as.POSIXct(paste0(glorys.years[y], '-01-01 00:00:00UTC'),origin = '1970-01-01 00:00:00',tz = 'UTC')
+    terra::time(out.ls[[t]]) = as.numeric(year.time)
+    # terra::time(out.ls[[i]]) = as.Date(paste0(glorys.years[y], '-01-01'))
+    
+    
+    # out.df.ls[[out.ind]] = as.data.frame(out.ls[[i]],cells =T, xy = T) %>%
+    #   mutate(Time = this.year, EPU = combs$EPU[i], Depth = combs$depth.name[i], Var =t.max.seq[t], Source = 'GLORYS',Units = 'ndays')%>%
+    #   rename(Latitude = 'y', Longitude = 'x', Value = 'sum')%>%
+    #   select(Time,EPU, Depth, Var,Value,Latitude,Longitude,Source,Units)
+    # 
+    
+    
+    print(signif(t/length(t.max.seq) ,2))
+    
+    # out.ind = out.ind + 1
+    
+    # for(i in 1:nrow(combs)){
+    #   # for(i in 1:length(glorys.)){
+    #   
+    #   if(combs$EPU[i] == 'NES'){
+    #     area.names = c('MAB','GB','GOM','SS')
+    #   }else{
+    #     area.names = combs$EPU[i]
+    #   }
+    #   
+    # 
+    #   
+    #   if(i ==1 & t == 1){
+    #     
+    #     writeCDF(neus.shp,here::here('data','SOE','thermal_habitat_gridded','GLORYS_depth_NEUS.nc'),overwrite =T)
+    #     #Create depth mask layer
+    #     depth.ls = lapply(1:nrow(depth.df),function(x){
+    #       d = terra::clamp(neus.shp,lower = depth.df$depth.min[x],upper = depth.df$depth.max[x],values = F)
+    #       values(d)[!is.na(values(d))] = x
+    #       return(d)
+    #     })
+    #     depth.mask = terra::merge(terra::sprc(depth.ls))
+    #     depth.mask = as.factor(depth.mask)
+    #     levels(depth.mask) = dplyr::select(depth.df,id,depth.name)
+    #     terra::time(depth.mask) = glorys.years[y]
+    #     writeCDF(depth.mask,here::here('data','SOE','thermal_habitat_gridded','GLORYS_depth_mask.nc'),overwrite =T)
+    #     writeCDF(epu.mask,here::here('data','SOE','thermal_habitat_gridded','GLORYS_EPU_mask.nc'),overwrite =T)
+    #   }
+    #   
+    #  
+    # }
+    # 
     #Combine epu x depth combs to single layer
-    out.sds = terra::merge(terra::sprc(out.ls))* epu.mask.binary
+    
     out.var.names[t] = paste0('Number of Days per Year Above ',t.max.seq[t],' degrees C')
-    year.out.ls[[t]]  = out.sds
+    
   }
   
+  out.sds =terra::sds(out.ls)
+  
+  # year.out.ls[[t]]  = out.sds
+  
   # saveRDS(out.ls,here::here('data','SOE','thermal_habitat_gridded_rast_neus_2025.rds'))
-  saveRDS(out.df.ls,here::here('data','SOE','thermal_habitat_gridded',paste0('thermal_habitat_gridded_df_neus_',this.year,'_SOE2025.rds')))
+  # saveRDS(out.df.ls,here::here('data','SOE','thermal_habitat_gridded',paste0('thermal_habitat_gridded_df_neus_',this.year,'_SOE2025.rds')))
   
   
   # for(i in 1:length(out.ls)){
@@ -240,7 +257,7 @@ for(y in 1:length(glorys.years)){
   # year.out.ls[[length(t.max.seq)+1]] = depth.mask
   # year.out.ls[[length(t.max.seq)+2]] = epu.mask
   
-  out.var = terra::sds(year.out.ls)
+  out.var = out.sds
   
   #concatenate names
   # out.names = c(paste0('nday_',t.max.seq),'depth_bin','EPU'
@@ -252,7 +269,7 @@ for(y in 1:length(glorys.years)){
   units(out.var) = c(rep('n days',length(t.max.seq)))
   # terra::time(out.var) = as.Date(paste0(glorys.years[y],'-01-01'))
   
-  out.filename = here::here('data','SOE','thermal_habitat_gridded',paste0('thermal_habitat_gridded_',this.year,'_SOE2025.nc'))
+  out.filename = here::here('data','SOE','thermal_habitat_gridded_V2',paste0('thermal_habitat_gridded_',this.year,'_SOE2025.nc'))
   # saveRDS(out.var,here::here('test.rds'))
   # out.var =readRDS(here::here('test.rds'))
   
@@ -298,14 +315,15 @@ for(y in 1:length(glorys.years)){
 }
 
 
-file.names = list.files(here::here('data','SOE','thermal_habitat_gridded'),'thermal_', full.names = T)
-test.nc = ncdf4::nc_open(file.names[2])
+file.names = list.files(here::here('data','SOE','thermal_habitat_gridded_V2'),'thermal_', full.names = T)
+test.nc = ncdf4::nc_open(file.names[32])
 # test.nc = ncdf4::nc_open('C:/Users/joseph.caracappa/Downloads/thermal_habitat_gridded_1993_SOE2025.nc')
 ncdf4::ncatt_get(test.nc,'nday_10')
 ncdf4::nc_close(test.nc)
-plot(terra::rast(file.names[1]))
-# test.sds = terra::sds(file.names[1],1)
-# writeCDF(test.sds,here::here('data','SOE','thermal_habitat_checker.nc'))
+x = terra::rast(file.names[1])
+plot(x)
+test.sds = terra::sds(file.names[1],1)
+writeCDF(test.sds,here::here('data','SOE','thermal_habitat_checker.nc'))
 
 
 # 

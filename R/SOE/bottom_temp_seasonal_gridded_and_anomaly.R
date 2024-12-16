@@ -176,15 +176,18 @@ data.all.mean =data.all.mean%>%
 
 #Join Dataframes and write out  
 data.comp.out = bind_rows(data.all.mean,data.all.anom)
-write.csv(data.comp.out, here::here('data','SOE','bottom_temp_anomaly_2025.csv'),row.names =F)
+write.csv(data.comp.out, here::here('data','SOE','bottom_temp_anomaly_2025_V2.csv'),row.names =F)
 
 #Plots compared to last year
-bt24 = ecodata::bottom_temp_comp%>%
+bt24 = ecodata::bottom_temp_model_anom%>%
   mutate(report.yr = 2024)
-bt25 = read.csv(here::here('data','SOE','bottom_temp_anomaly_2025.csv'))%>%
+bt25 = read.csv(here::here('data','SOE','bottom_temp_anomaly_2025_V2.csv'))%>%
   mutate(report.yr = 2025)
-data.all = bind_rows(bt24,bt25)
+data.all = bind_rows(bt24,bt25) %>%
+  filter(Source != 'PSY')
 
 ggplot(data.all, aes(x = Time, y = Value, color = Source,lty = factor(report.yr)))+
   geom_line()+
-  facet_grid(Var~EPU,scale = 'free_y')
+  facet_grid(Var~EPU,scale = 'free_y')+
+  geom_vline(xintercept = 2024,lty = 2)
+ggsave(here::here('Figures','bottom_temp_anomoly_2024_2025.png'),width = 12, height = 9, units = 'in')

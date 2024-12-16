@@ -4,9 +4,9 @@ out.dir = here::here('data','scallop','habitat_area')
 
 file.shp = terra::project(terra::vect(here::here('geometry','MAB_ESTIMATION_AREAS_2023_UTM18_PDT_NYB.shp')),' +proj=longlat +datum=WGS84 +no_defs ')
 
-source(here::here('R','data_processing','make_temp_mask_funs.R'))
+source(here::here('R','old','data_processing','make_temp_mask_funs.R'))
 
-years = 1993:2023
+years = 1993:2024
 
 max.vals = seq(16,19,0.5)
 SAM.names = file.shp$NewSAMS
@@ -17,7 +17,8 @@ SAMs.area.ls = list()
 i=1
 for(i in 1:length(years)){
   
-  file.in = here::here('data','GLORYS','GLORYS_daily',paste0('GLORYS_daily_BottomTemp_',years[i],'.nc'))
+  file.in = paste0('C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily/GLORYS_daily_BottomTemp_',years[i],'.nc')
+  # file.in = here::here('data','GLORYS','GLORYS_daily',paste0('GLORYS_daily_BottomTemp_',years[i],'.nc'))
   
   year.df = SAM.combs
   year.df$year = years[i]
@@ -27,12 +28,12 @@ for(i in 1:length(years)){
     
     SAM.shp = file.shp[which(file.shp$NewSAMS == SAM.combs$SAM.names[j]),]
     
-    SAM.mask =make_temp_mask(file.in,
-                   SAM.shp,
+    SAM.mask =make_temp_mask(file.in = file.in,
+                  file.shp =SAM.shp,
                    min.val = 0,
                    max.val = SAM.combs$max.vals[j])  
     
-    SAM.area = make_shp_area(file.in,
+    SAM.area = make_shp_area(data = file.in,
                              file.shp = SAM.shp,
                              units = 'km')
     

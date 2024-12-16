@@ -55,8 +55,13 @@ make_temp_ndays = function(data, out.df = T){
 # file.shp: Input SpatVect object for area of interest
 # units: "m" or "km" 
 make_shp_area = function(data,file.shp,units){
+  if(is.character(data)){
+    data.rast = terra::rast(data)  
+  }else{
+    data.rast = data
+  }
   
-  data.rast = terra::subset(data,1)
+  data.rast = terra::subset(data.rast,1)
   
   data.crop = terra::crop(terra::mask(data.rast,file.shp, touches = T),file.shp)
   
