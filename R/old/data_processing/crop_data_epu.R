@@ -4,6 +4,10 @@ crop_data_epu = function(shp.file,in.dir,out.dir,in.prefix,out.prefix){
   
   # library(sf)
   # library(raster)
+  
+  if(!dir.exists(out.dir)){
+    dir.create(out.dir)
+  }
   library(terra)
   
   epu.area = vect(shp.file)

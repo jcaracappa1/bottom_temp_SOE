@@ -72,6 +72,18 @@ dev.off()
 data.pct.area = data %>%
   filter(Varname == 'pct.area.mean' & current.year == F)
 
+data.pct.area.soe = data.pct.area%>%
+ rename(Time = 'year',
+        EPU = 'epu',
+        temp.threshold = 't.max')%>%
+  mutate(Var = paste0('>',temp.threshold,'\u00B0C'),
+         Source = 'GLORYS',
+         Units = 'Proportion')%>%
+  select(Time,EPU,Var,Value,Source,temp.threshold,Units)
+
+write.csv(data.pct.area.soe,here::here('data','SOE','thermal_threshold_annual_area_SOE2025.csv'))
+
+
 data.pct.area.this.year = data %>%
   filter(Varname == 'pct.area.mean' & current.year == T)
 

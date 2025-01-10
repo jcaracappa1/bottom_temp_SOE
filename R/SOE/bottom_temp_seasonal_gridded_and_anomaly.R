@@ -124,7 +124,7 @@ data.all.anom = data.all.anom.df %>%
 
 #Create Annual mean bottom temperature
 ##GLORYS
-glorys.epu.day = EDABUtilities::make_2d_summary_ts(data.in = glorys.files,
+glorys.epu.day = EDABUtilities::make_2d_summary_ts(data.in = glorys.files[32],
                                                write.out =F,
                                                shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
                                                var.name = 'bottomT',
@@ -133,6 +133,10 @@ glorys.epu.day = EDABUtilities::make_2d_summary_ts(data.in = glorys.files,
                                                touches =F,
                                                area.names = c('MAB','GB','GOM','SS')
 )
+
+ggplot(glorys.epu.day[[1]],aes(x=time, y= value, color = area))+
+  geom_line()
+
 glorys.epu.year.ls = list()
 for(i in 1:length(glorys.epu.day)){
   glorys.epu.year.ls[[i]] =glorys.epu.day[[i]] %>%

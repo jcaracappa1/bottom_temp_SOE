@@ -10,9 +10,9 @@ glorys.years = 1993:2024
 t.max.seq = seq(0.5,30,by =  0.5)
 
 EPU.names = c('MAB','GB','GOM','SS','all')
-depth.df = data.frame(depth.min = c(0,25,100),
-                      depth.max = c(25,100,300),
-                      depth.name = c('0-25m','25-100m','100-300m'))
+depth.df = data.frame(depth.min = c(0,25,100, 0),
+                      depth.max = c(25,100,300, 2000),
+                      depth.name = c('0-25m','25-100m','100-300m', 'AllDepths'))
 
 combs = expand.grid(year = glorys.years,t.max = t.max.seq,depth.name = depth.df$depth.name,EPU = EPU.names,stringsAsFactors = F)%>%
   left_join(depth.df)
@@ -21,7 +21,7 @@ bathy.shp = terra::rast(here::here('data','bathymetry','GLO-MFC_001_024_mask_bat
 
 out.area.ls = list()
 out.gridded.ls = list()
-i=1
+i=22717
 for(i in 1:nrow(combs)){
   
   if(combs$EPU[i] == 'all'){
@@ -91,7 +91,11 @@ for(i in 1:nrow(combs)){
 }
 
 out.area.df = bind_rows(out.area.ls)%>%
-  select(Time, EPU, Depth, Var, Value, Source, year, temp.threshold, Units)
+  select(Time, EPU, Depth, Var, Value, Source, year, temp.threshold, Units)%>%
+  mutate(Year = format(as.Date(Time),format = '%Y'))%>%
+  group_by(Year,EPU, Depth, Var, temp.threshold, Units,Source)%>%
+  summarise(Value = mean(Value))%>%
+  rename(Time = Year)
 
 write.csv(out.area.df, here::here('data','SOE','thermal_habitat_area_2025.csv'),row.names = F)
 

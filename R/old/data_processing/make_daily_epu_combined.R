@@ -1,8 +1,8 @@
 #Make gridded daily files split by EPU for heatwave index
 library(tidync)
 library(dplyr)
-roms.dir = here::here('data','ROMS','ROMS_daily_epu','/')
-glorys.dir = here::here('data','GLORYS','GLORYS_daily_epu','/')
+roms.dir = here::here('data','ROMS','2024','ROMS_daily_epu','/')
+glorys.dir = here::here('data','GLORYS','2025','GLORYS_daily_epu','/')
 psy.dir = here::here('data','PSY','PSY_daily_epu','/')
 
 epu.names = c('GOM','GB','MAB','SS')
@@ -14,12 +14,21 @@ for(i in 1:length(epu.names)){
   data.glorys = list()
   j=1
   for(j in 1:length(glorys.files)){
-    data.glorys[[j]] = tidync(paste0(glorys.dir,glorys.files[j]))%>%
-      hyper_tibble()%>%
+     glorys.yr = tidync(paste0(glorys.dir,glorys.files[j]))%>%
+      hyper_tibble()
+    
+    if(min(glorys.yr$time) < 86400*365){
+      glorys.yr = glorys.yr %>%
+        mutate(time = time*86400)
+    }
+     
+     data.glorys[[j]] =glorys.yr %>%
       mutate(source = 'GLORYS')%>%
       group_by(source,time)%>%
       summarise(BottomT.mean = mean(BottomT),
                 BottomT.sd = sd(BottomT))
+    
+    
   }
   data.glorys = bind_rows(data.glorys)
   
@@ -53,5 +62,5 @@ for(i in 1:length(epu.names)){
            date = as.Date(as.POSIXct(time,origin = '1970-01-01 00:00:00',tz = 'UTC')))%>%
     select(EPU,date,source,BottomT.mean,BottomT.sd)
   
-  write.csv(data.combined,here::here('data','SOE','daily_epu_combined',paste0('daily_bottomT_',epu.names[i],'_1959_2023.csv')),row.names = F)
+  write.csv(data.combined,here::here('data','SOE','daily_epu_combined',paste0('daily_bottomT_',epu.names[i],'_1959_2024.csv')),row.names = F)
 }

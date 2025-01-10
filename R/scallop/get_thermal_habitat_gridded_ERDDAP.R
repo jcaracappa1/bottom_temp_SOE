@@ -3,7 +3,20 @@
 # install.packages('rerddap')
 
 
-get_thermal_habitat_gridded_ERDDAP <- function(threshold, year, min.depth,max.depth,min.lat,min.lon,max.lat,max.lon,depth.mask.file, plot,write.table,plot.file,table.file,save_clean = F){
+get_thermal_habitat_gridded_ERDDAP <- function(threshold,
+                                               year,
+                                               min.depth,
+                                               max.depth,
+                                               min.lat,
+                                               min.lon,
+                                               max.lat,
+                                               max.lon,
+                                               depth.mask.file,
+                                               plot,
+                                               write.table,
+                                               plot.file,
+                                               table.file,
+                                               save_clean = F){
   library(dplyr)
   library(usethis)
   library(rerddap)

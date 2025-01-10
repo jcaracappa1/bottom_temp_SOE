@@ -3,10 +3,11 @@ library(terra)
 
 out.dir = here::here('data','gridded_raw_bottom_TS','/')
 
-glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
+# glorys.dir = here::here('data','GLORYS','GLORYS_daily','/')
+glorys.dir = 'C:/Users/joseph.caracappa/Documents/Data/GLORYS/GLORYS_daily'
 psy.dir = here::here('data','PSY_daily','/')
 
-years = 2022:2023
+years = 2022:2024
 
 isDate <- function(mydate, date.format = "%Y-%m-%d") {
   tryCatch(!is.na(as.Date(mydate, date.format)),  
