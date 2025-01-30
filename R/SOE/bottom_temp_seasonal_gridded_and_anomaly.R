@@ -124,7 +124,7 @@ data.all.anom = data.all.anom.df %>%
 
 #Create Annual mean bottom temperature
 ##GLORYS
-glorys.epu.day = EDABUtilities::make_2d_summary_ts(data.in = glorys.files[32],
+glorys.epu.day = EDABUtilities::make_2d_summary_ts(data.in = glorys.files,
                                                write.out =F,
                                                shp.file = here::here('geometry','EPU_NOESTUARIES.shp'),
                                                var.name = 'bottomT',
@@ -180,12 +180,12 @@ data.all.mean =data.all.mean%>%
 
 #Join Dataframes and write out  
 data.comp.out = bind_rows(data.all.mean,data.all.anom)
-write.csv(data.comp.out, here::here('data','SOE','bottom_temp_anomaly_2025_V2.csv'),row.names =F)
+write.csv(data.comp.out, here::here('data','SOE','bottom_temp_anomaly_2025_V3.csv'),row.names =F)
 
 #Plots compared to last year
 bt24 = ecodata::bottom_temp_model_anom%>%
   mutate(report.yr = 2024)
-bt25 = read.csv(here::here('data','SOE','bottom_temp_anomaly_2025_V2.csv'))%>%
+bt25 = read.csv(here::here('data','SOE','bottom_temp_anomaly_2025_V3.csv'))%>%
   mutate(report.yr = 2025)
 data.all = bind_rows(bt24,bt25) %>%
   filter(Source != 'PSY')

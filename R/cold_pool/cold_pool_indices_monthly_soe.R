@@ -170,7 +170,7 @@ dt_cp<-dt_cpi_soe%>%
   inner_join(select(dt_extent_index_soe,source,year,extent_index,se_extent_index), by=c('source',"year")) %>%
   select(source,year,cold_pool_index,se_cold_pool_index,persistence_index,se_persistence_index,extent_index,se_extent_index)
   
-write.csv(file=here::here('data','SOE',paste0("cold_pool_indices_1959_",report.year-1,".csv")),x=dt_cp,row.names = F)
+write.csv(file=here::here('data','SOE',paste0("cold_pool_indices_1959_",report.year-1,"_SOE2025.csv")),x=dt_cp,row.names = F)
 
 #Optional: Compare to ecodata
 # soe = ecodata::cold_pool%>%

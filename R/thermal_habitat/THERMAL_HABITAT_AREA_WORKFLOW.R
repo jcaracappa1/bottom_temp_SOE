@@ -103,4 +103,9 @@ out.gridded.df = bind_rows(out.gridded.ls)
 
 write.csv(out.gridded.df, here::here('data','SOE','thermal_habitat_gridded_2025.csv'),row.names = F)
 
+this.year = data.table::fread( here::here('data','SOE','thermal_habitat_gridded_2025.csv')) %>%
+  filter(Time == max(Time))
+write.csv(this.year, here::here('data','SOE','thermal_habitat_gridded_2024_only_SOE2025.csv'),row.names = F)
+  
+
 

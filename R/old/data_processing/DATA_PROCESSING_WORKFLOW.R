@@ -5,7 +5,7 @@
 #source(here::here('R','get_PSY_bottomT.R'))
 
 #1b) If pulled from 3D run scripts that extract bottom temperature
-source(here::here('R','data_processing','make_GLORYS_bottomT.R'))
+source(here::here('R','old','data_processing','make_GLORYS_bottomT.R'))
 source(here::here('R','data_processing','make_PSY_bottomT.R'))
 
 #salinity

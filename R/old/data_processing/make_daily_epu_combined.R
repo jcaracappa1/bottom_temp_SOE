@@ -60,7 +60,7 @@ for(i in 1:length(epu.names)){
     arrange(time)%>%
     mutate(EPU = epu.names[i],
            date = as.Date(as.POSIXct(time,origin = '1970-01-01 00:00:00',tz = 'UTC')))%>%
-    select(EPU,date,source,BottomT.mean,BottomT.sd)
+    dplyr::select(EPU,date,source,BottomT.mean,BottomT.sd)
   
   write.csv(data.combined,here::here('data','SOE','daily_epu_combined',paste0('daily_bottomT_',epu.names[i],'_1959_2024.csv')),row.names = F)
 }
