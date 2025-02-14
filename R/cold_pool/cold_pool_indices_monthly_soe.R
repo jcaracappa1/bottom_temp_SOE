@@ -25,7 +25,7 @@ hist(bt_temp_time_series_month_cpi$bt_temp)
 # ------------------------------------------------------
 # mean over the period 1972-2018 between June and September
 dt_avg_bt<-bt_temp_time_series_month_cpi %>%
-  filter(month %in% (6:9)) %>%
+  filter(month %in% (6:9), year %in% (1991:2020)) %>%
   group_by(cell_no) %>%
   summarise(mean_bt_temp=mean(bt_temp)) %>% #  mean temp over the time period
   as.data.frame()
@@ -88,14 +88,19 @@ for (y in sort(unique(dt_bt_sep_oct$year))) { # for each year
     dt_end_month_year_above <- dt_end_month_year_above %>% 
       group_by(source,cell_no) %>%
       summarise(end_month=max(month))
-  } 
+  }
   dt_end_month_year<-bind_rows(dt_end_month_year_during,dt_end_month_year_above)%>%
     mutate(year=y) %>%
     as.data.frame()
   dt_end_month<-bind_rows(dt_end_month,dt_end_month_year)
+  # if('start_below' %in% colnames(dt_end_month_year)){
+  #   print(y)
+  #   stop()
+  # }
 }
 # Mean persistence
 mean_end_month<-dt_end_month %>%
+  filter(year %in% 1991:2020)%>%
   group_by(source,cell_no) %>%
   summarise(mean_end_month=mean(end_month)) %>%
   as.data.frame()
@@ -103,9 +108,9 @@ mean_end_month<-dt_end_month %>%
 dt_persistence_index_soe<-inner_join(mean_end_month,dt_end_month,by=c('source',"cell_no")) %>%
   mutate(res_month=end_month-mean_end_month) %>%
   group_by(source,year) %>%
-  summarise(persistence_index=mean(res_month),
-            sd_persistence_index=sd(res_month),
-            mean_end_month=mean(end_month),
+  summarise(persistence_index=mean(res_month,na.rm=T),
+            sd_persistence_index=sd(res_month,na.rm=T),
+            mean_end_month=mean(end_month,na.rm=T),
             count_cell=length(res_month)) %>%
   as.data.frame() %>%
   mutate(se_persistence_index=sd_persistence_index/sqrt(count_cell)) %>%
@@ -122,6 +127,7 @@ dim(dt_persistence_index_soe)
 # -----------------------------------------------------
 bt_temp_time_series_month_extent <- filter(bt_temp_time_series_month_cpi, month %in% (6:9))
 dt_bt_ts_mean<-bt_temp_time_series_month_extent %>%
+  filter(year %in% 1991:2020)%>%
   group_by(source,year) %>%
   summarise(bt_temp=mean(bt_temp)) %>%
   as.data.frame()
@@ -145,6 +151,7 @@ dt_extent_year<-dt_extent_year%>%
   as.data.frame()
 # Mean extent
 mean_nbr_cell<-dt_extent_year %>%
+  filter(year %in% 1991:2020)%>%
   summarise(mean_nbr_cell=mean(nbr_cell)) %>%
   as.data.frame()
 # spatial extent index calculation
@@ -166,9 +173,10 @@ dim(dt_extent_index_soe)
 # ----------------------------------------------------
 dt_cp<-dt_cpi_soe%>%
   select(source,year,cold_pool_index,se_cold_pool_index)  %>%
-  inner_join(select(dt_persistence_index_soe,source,year,persistence_index,se_persistence_index), by=c('source',"year")) %>%
+    inner_join(select(dt_persistence_index_soe,source,year,persistence_index,se_persistence_index), by=c('source',"year")) %>%
   inner_join(select(dt_extent_index_soe,source,year,extent_index,se_extent_index), by=c('source',"year")) %>%
-  select(source,year,cold_pool_index,se_cold_pool_index,persistence_index,se_persistence_index,extent_index,se_extent_index)
+  rename(Source = 'source')%>%
+  select(Source,year,cold_pool_index,se_cold_pool_index,persistence_index,se_persistence_index,extent_index,se_extent_index)
   
 write.csv(file=here::here('data','SOE',paste0("cold_pool_indices_1959_",report.year-1,"_SOE2025.csv")),x=dt_cp,row.names = F)
 

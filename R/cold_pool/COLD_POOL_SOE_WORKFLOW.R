@@ -16,16 +16,16 @@ source(here::here('R','cold_pool','cold_pool_indices_monthly_soe.R'))
 #Compare to last year
 cp24 = ecodata::cold_pool%>%
   mutate(report.year = 2024)
-cp25 = read.csv(here::here('data','SOE','cold_pool_indices_1959_2024.csv'))%>%
+cp25 = read.csv(here::here('data','SOE','cold_pool_indices_1959_2024_SOE2025.csv'))%>%
   rename(Time = 'year')%>%
-  tidyr::gather(Var, Value,-source,-Time)%>%
+  tidyr::gather(Var, Value,-Source,-Time)%>%
   mutate(EPU = 'MAB',
          report.year = 2025)
 
 cp.all = bind_rows(cp24,cp25) %>%
-  filter(source != 'PSY')
+  filter(Source != 'PSY')
 
-ggplot(cp.all, aes(x = Time, y = Value, color = source,lty = factor(report.year)))+
+ggplot(cp.all, aes(x = Time, y = Value, color = Source,lty = factor(report.year)))+
   geom_line()+
   facet_wrap(~Var,scale = 'free_y')
 
