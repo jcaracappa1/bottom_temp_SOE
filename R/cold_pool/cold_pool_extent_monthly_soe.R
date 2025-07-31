@@ -55,6 +55,7 @@ bt_temp_time_series_month <- filter(bt_temp_time_series,cell_no %in% cell.index$
   as.data.frame()
 
 saveRDS(bt_temp_time_series_month,here::here('data','cold_pool',paste0('bt_temp_time_series_month_',report.year,'.rds')))
+bt_temp_time_series_month = readRDS(here::here('data','cold_pool',paste0('bt_temp_time_series_month_',report.year,'.rds')))
 
 head(bt_temp_time_series_month)
 dim(bt_temp_time_series_month)
@@ -88,6 +89,15 @@ dt_cp_extent<- filter(bt_temp_time_series_month, year%in%(1959:(report.year-1)) 
   as.data.frame() %>%
   filter(avg_bottom_t<10) 
 
+cp.summ = dt_cp_extent %>%
+  group_by(year)%>%
+  summarise(
+    min.temp = min(value, na.rm = TRUE),
+    max.temp = max(value, na.rm = TRUE),
+    mean.temp = mean(value, na.rm = TRUE),
+    ncell = n_distinct(cell)
+  )
+
 saveRDS(dt_cp_extent,here::here('data','cold_pool',paste0('dt_cp_extent_',report.year,'.rds')))
 
 head(dt_cp_extent)
@@ -108,6 +118,23 @@ map_cp_extent <- ggplot()+
   annotation_map(map_data('worldHires'),fill = 'grey70',alpha=0.3)+
   # geom_sf(data=geo_borders, colour=NA, fill="lightgoldenrod2")+ # geo_border loaded in the map code see source(...)
   scale_x_continuous(limits=xlim1) +  scale_y_continuous(limits=ylim1) # limit in the map R code
+
+# cp_ext_year = bt_temp_time_series_month %>%
+#   # filter( year == 2024)%>%
+#   group_by(year,cell_no)%>%
+#   summarise(avg_bottom_t=mean(bt_temp)) %>%
+#   as.data.frame() %>%
+#   filter(avg_bottom_t<10) %>%
+#   left_join(cell.index, by="cell_no") %>%
+#   st_as_sf()
+# ggplot()+ 
+#   geom_sf(data=cp_ext_year,aes(fill=avg_bottom_t,color=avg_bottom_t),size=0.2, pch = 22) +
+#   # annotation_map(map_data('worldHires'),fill = 'grey70',alpha=0.3)+
+#   # geom_sf(data=geo_borders, colour=NA, fill="lightgoldenrod2")+ # geo_border loaded in the map code see source(...)
+#   scale_x_continuous(limits=xlim1) +  scale_y_continuous(limits=ylim1) +
+#   facet_wrap(~year)
+
+
 # ------------------------------------------------------
 # create shapefile with the grid cell within the cold pool extent
 # Open it in QGIS or ArcGIS or others - report isolated grid cell numbers 
@@ -115,7 +142,7 @@ map_cp_extent <- ggplot()+
 # ------------------------------------------------------
 # /!\ preliminary analysis showed some isolated grid cells ==> We removed this cell
 # should be adjust each year
-dt_cp_extent <-  filter(dt_cp_extent,!cell_no%in%c(1399,2850,3259,3341,2605))
+# dt_cp_extent <-  filter(dt_cp_extent,!cell_no%in%c(1399,2850,3259,3341,2605))
 head(dt_cp_extent)
 dim(dt_cp_extent)
 # 
